@@ -57,6 +57,24 @@ class CommandHandler extends Base {
     }
 
     /**
+     * Gets all the main commands registered in the application.
+     * It excludes all aliases and returns only the unique main commands.
+     *
+     * @returns {object[]} An array of main command objects. Each command object contains
+     * the name, description, help text, and aliases of the command.
+     */
+    getMainCommands() {
+        const allCommands = [];
+
+        this.commands.forEach((command, name) => {
+            if (command.name === name) {
+                allCommands.push(command);
+            }
+        });
+        return allCommands;
+    }
+
+    /**
      * Handles and executes the incoming commands if they exist in the commands Map,
      * otherwise returns false. The command's execution also provides various potential parameters.
      *
@@ -84,6 +102,7 @@ class CommandHandler extends Base {
                 roomManager: params.roomManager,
                 data: parameters,
                 context: params.context || "user",
+                commandHandler: this
             });
             return true;
         } catch (err) {
