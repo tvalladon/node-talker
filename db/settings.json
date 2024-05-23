@@ -1,0 +1,14 @@
+{
+    "server_name": "Astralen",
+    "welcome_message": "Welcome to <server_name>, [p:<player_name>]!",
+    "banner_message": "<cyan>What a nice banner!<reset>",
+    "motd_message": "MOTD: Be nice to each other.",
+    "spawn_message": "... and BOOM! you exist ...",
+    "welcomeMessage": [
+        {
+            "content": [
+                "Welcome text goes here, add more than one object to have paging."
+            ]
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+  "roomId": 0,
+  "zoneId": 0,
+  "name": "Space",
+  "description": "Amidst the silent expanse of the cosmos, you find yourself adrift, weightless and contemplative. Stars twinkle like distant memories, fleeting and elusive, as galaxies swirl in a cosmic dance of unfathomable complexity. Planets, mere specks in the infinite canvas of space, drift by like lost dreams, their surfaces a tapestry of unknown wonders. The void envelops you, a vast and indifferent expanse, yet within its depths lies the potential for discovery and revelation. You float, a solitary voyager in the boundless sea of the universe, pondering the mysteries that lie beyond the reaches of comprehension.",
+  "lockable": false,
+  "locked": false,
+  "whitelist": [],
+  "temporary": false,
+  "creator": "1",
+  "owner": "1",
+  "exits": {},
+  "props": {
+    "stars": "Twinkling like distant memories in the cosmic expanse.",
+    "planets": "Drifting by like lost dreams, each holding untold wonders.",
+    "void": "A vast and indifferent expanse, holding the secrets of the universe.",
+    "mysteries": "Lingering beyond comprehension, waiting to be unraveled in the depths of space."
+  }
+}

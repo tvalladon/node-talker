@@ -1,0 +1,10 @@
+node_modules
+package-lock.json
+bun.lockb
+logs
+astralen
+client
+.vscode
+.idea
+launch.json
+.env
