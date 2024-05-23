@@ -98,7 +98,7 @@ class ClientHandler extends Base {
                     this.sendPrompt();
                 }
 
-                if (cleanData) this.logInfo("Client data", cleanData);
+                // if (cleanData) this.logInfo("Client data", cleanData);
             } catch (error) {
                 this.logInfo(`Failed to handle data: ${error}`); // Error message if handling data fails
             }
