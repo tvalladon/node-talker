@@ -12,7 +12,7 @@ module.exports = {
     name: 'help',
     description: "This command lists all available commands with their brief descriptions or provides detailed help on a specific command when followed by the command's name.",
     help: "Use 'help' to get a list of all commands with their descriptions or 'help <command>' to get a detailed description and usage for a specific command. Using 'help command' will also show available aliases.",
-    aliases: [],
+    aliases: ["?"],
     execute(params) {
         let command = params.command;
         let user = params.user;
