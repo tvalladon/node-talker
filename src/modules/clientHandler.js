@@ -126,7 +126,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to 'SERVER BANNER'.
      */
     sendUserBanner() {
-        userManager.send([this.user.id], '<sl>' + (this.settings.banner_message || process.env.BANNER_MESSAGE || 'SERVER BANNER') + '<sl>');
+        userManager.send([this.user.id], '<sl>' + (this.settings.bannerMessage || process.env.BANNER_MESSAGE || 'SERVER BANNER') + '<sl>');
     }
 
     /**
@@ -134,7 +134,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to 'Welcome [p:<player_name>] to the server.'.
      */
     sendUserWelcome() {
-        userManager.send([this.user.id], '<sl>' + (this.settings.welcome_message || process.env.WELCOME_MESSAGE || 'Welcome [p:<player_name>] to the server.') + '<sl>');
+        userManager.send([this.user.id], '<sl>' + (this.settings.welcomeMessage || process.env.WELCOME_MESSAGE || 'Welcome [p:<player_name>] to the server.') + '<sl>');
     }
 
     /**
@@ -142,7 +142,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to 'SERVER MOTD'.
      */
     sendUserMOTD() {
-        userManager.send([this.user.id], '<sl>' + (this.settings.motd_message || process.env.MOTD || 'SERVER MOTD') + '<sl>');
+        userManager.send([this.user.id], '<sl>' + (this.settings.motdMessage || process.env.MOTD || 'SERVER MOTD') + '<sl>');
     }
 
     /**
@@ -150,7 +150,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to '... and BOOM! you exist ...'
      */
     sendSpawnMessage() {
-        userManager.send([this.user.id], '<sl>' + (this.settings.spawn_message || process.env.SPAWN_MESSAGE || '... and BOOM! you exist ...') + '<sl>');
+        userManager.send([this.user.id], '<sl>' + (this.settings.spawnMessage || process.env.SPAWN_MESSAGE || '... and BOOM! you exist ...') + '<sl>');
     }
 
     /**
