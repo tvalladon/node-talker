@@ -34,11 +34,11 @@ module.exports = {
         let data = params.data;
 
         readAndParseSettings().then(settings => {
-            if (!args[0]) args[0] = "1";
-            let pageNumber = calculatePageNumber(args, settings.welcomeMessage.length);
-            manageUserMessages(userManager, user, pageNumber, settings);
+            if (!data) data = "1";
+            let pageNumber = calculatePageNumber(data, settings.welcomeCmdContents.length);
+            manageUserMessages(userManager, user, pageNumber, settings.welcomeCmdContents);
         }).catch(err => {
-            userManager.send(user.id, "An error occurred while reading the settings file.<sl>");
+            userManager.send(user.id, `An error occurred while reading the settings file. ${err}<sl>`);
         });
     }
 };
@@ -59,12 +59,13 @@ function calculatePageNumber(args, totalPages) {
 }
 
 function manageUserMessages(userManager, user, pageNumber, settings) {
-    const pageContent = settings.welcomeMessage[pageNumber - 1].content;
-    userManager.send(user.id, '<sl>' + pageContent.join("<dl>") + `<sl>Page ${pageNumber} of ${settings.welcomeMessage.length}.`);
+    const pageContent = settings[pageNumber - 1];
 
-    if (pageNumber < settings.welcomeMessage.length) {
-        userManager.send(user.id, `<sl>To view the next page, use [c:welcome ${pageNumber + 1}]<sl>`);
+    userManager.send(user.id, '<sl>' + pageContent + `<sl>Page ${pageNumber} of ${settings.length}.`);
+
+    if (pageNumber < settings.length) {
+        userManager.send(user.id, `To view the next page, use [c:welcome ${pageNumber + 1}]<sl>`);
     } else {
-        userManager.send(user.id, `<sl>End of welcome page.<sl>`);
+        userManager.send(user.id, `End of welcome page.<sl>`);
     }
 }

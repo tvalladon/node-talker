@@ -1,14 +1,10 @@
 {
-    "server_name": "Astralen",
-    "welcome_message": "Welcome to <server_name>, [p:<player_name>]!",
-    "banner_message": "<cyan>What a nice banner!<reset>",
-    "motd_message": "MOTD: Be nice to each other.",
-    "spawn_message": "... and BOOM! you exist ...",
-    "welcomeMessage": [
-        {
-            "content": [
-                "Welcome text goes here, add more than one object to have paging."
-            ]
-        }
+    "serverName": "Astralen",
+    "welcomeMessage": "Welcome to <server_name>, [p:<player_name>]!",
+    "bannerMessage": "<cyan>What a nice banner!<reset>",
+    "motdMessage": "MOTD: Be nice to each other.",
+    "spawnMessage": "... and BOOM! you exist ...",
+    "welcomeCmdContents": [
+        "Welcome text goes here, each array item is one page, add more pages as needed."
     ]
 }
