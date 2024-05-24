@@ -1,25 +1,16 @@
 /**
- * Command name: say
+ * Command name: ooc
  * Description: This command lets you broadcast a message in various scopes.
  *
  * Usage:
- * "say <message>": Broadcast a message to the same room.
- * "yell <message>": Broadcast a message to the same and adjacent rooms.
- * "shout <message>": Broadcast a message globally across the server.
+ * "ooc <message>": Broadcast a message to the same room.
+ * "looc <message>": Broadcast a message to the same and adjacent rooms.
+ * "gooc <message>": Broadcast a message globally across the server.
  *
  * E.g:
- * "say Hi everyone" - User sends a message in the current room.
- * "yell Help!" - User yells a message in the current and adjacent rooms.
- * "shout Hello World" - User shouts a message globally across the server.
- *
- * Abbreviated commands are also available for convenience.
- * Single quote (') for "say"
- * Double quotes (") for "yell"
- * Exclamation mark (!) for "shout"
- *
- * E.g:
- * "' Hi everyone" - Equivalent to "say Hi everyone"
- * "! Hello World" - Equivalent to "shout Hello World"
+ * "ooc discusses the scene." - User sends a message to the current room.
+ * "looc asks for clarification" - User sends a message to the current and adjacent rooms.
+ * "gooc shares a thought." - User sends a message globally across the server.
  *
  * @param {object} params - An object containing different parameters to control the execution of this command.
  * The structure of the 'params' object is:
@@ -33,10 +24,10 @@
 const _ = require("lodash");
 
 module.exports = {
-    name: "say",
-    description: "This command lets you broadcast a message in various scopes. Use 'say <message>' to send a message in the same room, 'yell <message>' to broadcast your message in the same and adjacent rooms, or 'shout <message>' to broadcast your message globally across the server. This allows you to control the reach of your message.",
-    help: "Use 'say <message>', 'yell <message>', or 'shout <message>' to broadcast a message. Each command broadcasts to a different range: 'say' for the same room, 'yell' for local rooms, and 'shout' for global.",
-    aliases: ["'", 'yell', '"', 'shout', '!'],
+    name: "ooc",
+    description: "This command lets you broadcast a message in various scopes. Use 'ooc <message>' to send a message in the same room, 'looc <message>' to broadcast your message in the same and adjacent rooms, or 'gooc <message>' to broadcast your message globally across the server. This allows you to control the reach of your message.",
+    help: "Use 'ooc <message>', 'looc <message>', or 'gooc <message>' to broadcast a message. Each command broadcasts to a different range: 'ooc' for the same room, 'looc' for local rooms, and 'gooc' for global.",
+    aliases: ['looc', 'gooc'],
     execute(params) {
         let command = params.command;
         let user = params.user;
@@ -46,26 +37,27 @@ module.exports = {
 
         // Error checking for valid message
         if (!data) {
-            userManager.send(user.id, 'You need to provide something to say!<sl>');
+            userManager.send(user.id, 'You need to provide something to ooc!<sl>');
             return;
         }
 
-        // Broadcast the 'action' to all users in the room
+
+        // Broadcast the 'message' to all users in the room
         const sendInRoom = (user, data) => {
-            userManager.send(user.id, `You say: ${data}\n`);
+            userManager.send(user.id, `You ooc: ${data}\n`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
-            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] says: ${data}<sl>`);
+            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] ooc: ${data}<sl>`);
         };
 
-        // Broadcast the 'action' to all users in the room
+        // Broadcast the 'message' to all users in the room and adjacent rooms
         const sendLocally = (user, data) => {
-            userManager.send(user.id, `You yell: ${data}\n`);
+            userManager.send(user.id, `You ${data}\n`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
-            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] yells: ${data}<sl>`);
+            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] looc: ${data}<sl>`);
 
             // Fetch current room
             let currentRoom = roomManager.loadRoom(user.zoneId, user.roomId);
@@ -81,27 +73,25 @@ module.exports = {
                 let usersInExit = userManager.getRoomUsers(nextZoneId, nextRoomId) || [];
 
                 // Send message to users in adjacent rooms
-                userManager.send(usersInExit.map((person) => person.id), `<sl>(from nearby) [p:${user.firstName} ${user.lastName}] yells: ${data}<sl>`);
+                userManager.send(usersInExit.map((person) => person.id), `<sl>(from nearby) [p:${user.firstName} ${user.lastName}] looc: ${data}<sl>`);
             });
         };
 
+        // Broadcast the message to all users
         const sendGlobally = (user, message) => {
-            // Broadcast the message to all users
             // The message that the current user will see
-            userManager.send(user.id, `(globally) You shout: ${message}\n`);
+            userManager.send(user.id, `(globally) You ${message}\n`);
             // Get all users in the same room
             let allUsers = userManager.getActiveUsers().filter((activeUser) => activeUser.id !== user.id) || [];
             // The message that other users on the server will see
-            userManager.send(allUsers.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] shouts: ${message}<sl>`);
+            userManager.send(allUsers.map((person) => person.id), `<sl>(from somewhere) [p:${user.firstName} ${user.lastName}] gooc: ${message}<sl>`);
         }
 
         switch (command) {
-            case 'yell':
-            case '"':
+            case 'looc':
                 sendLocally(user, data);
                 break;
-            case 'shout':
-            case '!':
+            case 'gooc':
                 sendGlobally(user, data);
                 break;
             default:

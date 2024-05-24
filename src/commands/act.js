@@ -56,7 +56,7 @@ module.exports = {
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
-            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:<player_name>] ${data}<sl>`);
+            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] ${data}<sl>`);
         };
 
         // Broadcast the 'action' to all users in the room and adjacent rooms
@@ -65,7 +65,7 @@ module.exports = {
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
-            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:<player_name>] ${data}<sl>`);
+            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] ${data}<sl>`);
 
             // Fetch current room
             let currentRoom = roomManager.loadRoom(user.zoneId, user.roomId);
@@ -81,7 +81,7 @@ module.exports = {
                 let usersInExit = userManager.getRoomUsers(nextZoneId, nextRoomId) || [];
 
                 // Send message to users in adjacent rooms
-                userManager.send(usersInExit.map((person) => person.id), `<sl>(from nearby) [p:<player_name>] ${data}<sl>`);
+                userManager.send(usersInExit.map((person) => person.id), `<sl>(from nearby) [p:${user.firstName} ${user.lastName}] ${data}<sl>`);
             });
         };
 
@@ -92,7 +92,7 @@ module.exports = {
             // Get all users in the same room
             let allUsers = userManager.getActiveUsers().filter((activeUser) => activeUser.id !== user.id) || [];
             // The message that other users on the server will see
-            userManager.send(allUsers.map((person) => person.id), `<sl>(from somewhere) [p:<player_name>] ${message}<sl>`);
+            userManager.send(allUsers.map((person) => person.id), `<sl>(from somewhere) [p:${user.firstName} ${user.lastName}] ${message}<sl>`);
         }
 
         switch (command) {
