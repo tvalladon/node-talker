@@ -170,7 +170,7 @@ class Base {
         // Replace custom tags for players, exits, interactable props, and commands
         text = text.replace(/\[p:(.+?)]/g, "<yellow>[<green>$1<yellow>]<reset>"); // Players
         text = text.replace(/\[e:(.+?)]/g, "<yellow>[<cyan>$1<yellow>]<reset>"); // Exits
-        text = text.replace(/\[i:(.+?)]/g, "<yellow>[<magenta>$1<yellow>]<reset>"); // Interactable props
+        text = text.replace(/\[i:(.+?)]/g, "<yellow>[:<magenta>$1<yellow>:]<reset>"); // Interactable props
         text = text.replace(/\[c:(.+?)]/g, '<yellow>"<green>$1<yellow>"<reset>'); // Commands
         text = text.replace(/\[b:(.+?)]/g, "<yellow>(<green>$1<yellow>)<reset>"); // Brackets
 
