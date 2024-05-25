@@ -1,6 +1,6 @@
 /**
  * Command name: roll
- * Description: This command lets you make a dice roll and broadcast the result in various scopes.
+ * Description: This command lets you make a die roll and broadcast the result in various scopes.
  *
  * Usage:
  * "roll <dice>": Broadcast a message with roll result in the same room.
