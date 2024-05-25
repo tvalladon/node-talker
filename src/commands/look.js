@@ -194,7 +194,7 @@ module.exports = {
 
         const lookAtRoom = () => {
             if (!currentRoom) {
-                userManager.send(user.id, "You're in an undefined space. Please use <yellow>>> <cyan>rescue <yellow><<<reset><sl>");
+                userManager.send(user.id, "You're in an undefined space. Please use [c:rescue]<sl>");
                 return true;
             }
 
