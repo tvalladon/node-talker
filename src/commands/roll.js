@@ -9,6 +9,7 @@
  *
  * @param {object} params - A similar structure as the params in 'say' command.
  */
+
 const _ = require("lodash");
 
 module.exports = {
