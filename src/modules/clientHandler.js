@@ -131,7 +131,14 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to 'SERVER BANNER'.
      */
     sendUserBanner() {
-        userManager.send([this.user.id], '<sl>' + (this.settings.bannerMessage || process.env.BANNER_MESSAGE || 'SERVER BANNER') + '<sl>');
+        let bannerMessage = (this.settings.bannerMessage || process.env.BANNER_MESSAGE || 'SERVER BANNER');
+
+        // If the user supports high ascii, replace * with ¤
+        if (this.user.supportsHighAscii) {
+            bannerMessage = bannerMessage.replace(/\*/g, '\u263A');
+        }
+
+        userManager.send([this.user.id], '<sl>' + bannerMessage + '<sl>');
     }
 
     /**
