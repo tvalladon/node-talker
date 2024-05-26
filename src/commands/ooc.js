@@ -25,8 +25,8 @@ const _ = require("lodash");
 
 module.exports = {
     name: "ooc",
-    description: "This command lets you broadcast a message in various scopes. Use 'ooc <message>' to send a message in the same room, 'looc <message>' to broadcast your message in the same and adjacent rooms, or 'gooc <message>' to broadcast your message globally across the server. This allows you to control the reach of your message.",
-    help: "Use 'ooc <message>', 'looc <message>', or 'gooc <message>' to broadcast a message. Each command broadcasts to a different range: 'ooc' for the same room, 'looc' for local rooms, and 'gooc' for global.",
+    description: "This command lets you broadcast a message in various scopes.",
+    help: "Use [c:ooc <message>], [c:looc <message>], or [c:gooc <message>] to broadcast a message. Each command broadcasts to a different range: 'ooc' for the same room, 'looc' for local rooms, and 'gooc' for global.",
     aliases: ['looc', 'gooc'],
     execute(params) {
         let command = params.command;

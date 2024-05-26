@@ -41,8 +41,8 @@ const _ = require("lodash");
 
 module.exports = {
     name: "look",
-    description: 'Allows the user to look around in the current room or at specific entities. You can look at specific direction like "north", "south", etc., or look at specific entities or at your self',
-    help: "Use this command to observe your surroundings. You can look in a direction, at yourself, others, specific items or characters.",
+    description: 'Allows the user to look around in the current room or at specific entities.',
+    help: "Use this command to observe your surroundings. You can look in a direction with [c:look <direction>], at yourself with [c:look self], at others with [c:look <player name>], at room props with [c:look <prop name>], at specific items or characters.",
     aliases: ["l", "read", "examine", "inspect", "view", "check", "study", "observe", "scrutinize", "survey", "glance", "explore", "focus", "glimpse", "stare", "peek", "analyze", "notice", "identify"],
     execute(params) {
         let command = params.command;

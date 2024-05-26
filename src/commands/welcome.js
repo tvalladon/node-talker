@@ -23,9 +23,10 @@ const fs = require("fs");
 const SETTINGS_FILE = `${process.cwd()}/${process.env.DB_PATH}/settings.json`;
 
 module.exports = {
-    name: 'welcome',
-    description: 'Display the welcome message for new users.',
-    help: '[c:welcome <page>]. Display the welcome message for new users. Optionally, specify a page number to view a specific page of the welcome message.',
+    name: "welcome",
+    description: "Display the welcome message for new users.",
+    help: "Use [c:welcome] to display the first welcome information page. Specify a page number to view a specific page of the welcome message using [c:welcome <page>].",
+    aliases: [],
     execute(params) {
         let command = params.command;
         let user = params.user;

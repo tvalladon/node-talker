@@ -15,7 +15,7 @@ const _ = require("lodash");
 module.exports = {
     name: "roll",
     description: "Roll dice with or without a modifier and with advantage or disadvantage.",
-    help: "Format: `<number of dice>d<dice sides>[+/-<modifier>][adv/dis]`. Examples: [c:roll 2d6+3], [c:roll 1d20-2], [c:roll 2d20adv], [c:roll 4d10-2dis].",
+    help: "Format: `<number of dice>d<dice sides>[+/-<modifier>][adv/dis]`. Examples: [c:roll 2d6+3], [c:roll 1d20-2], [c:roll 2d20adv], [c:roll 4d10-2dis]. Each command broadcasts to a different range: 'roll' for the same room, 'lroll' for local rooms, and 'groll' for global.",
     aliases: ["lroll", "groll"],
     execute(params) {
         const {command, user, data, userManager, roomManager} = params;

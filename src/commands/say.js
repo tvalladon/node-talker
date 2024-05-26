@@ -34,8 +34,8 @@ const _ = require("lodash");
 
 module.exports = {
     name: "say",
-    description: "This command lets you broadcast a message in various scopes. Use 'say <message>' to send a message in the same room, 'yell <message>' to broadcast your message in the same and adjacent rooms, or 'shout <message>' to broadcast your message globally across the server. This allows you to control the reach of your message.",
-    help: "Use 'say <message>', 'yell <message>', or 'shout <message>' to broadcast a message. Each command broadcasts to a different range: 'say' for the same room, 'yell' for local rooms, and 'shout' for global.",
+    description: "This command lets you broadcast a message in various scopes.",
+    help: "Use [c:say <message>], [c:yell <message>], or [c:shout <message>] to broadcast a message. Each command broadcasts to a different range: 'say' for the same room, 'yell' for local rooms, and 'shout' for global.",
     aliases: ["'", 'yell', '"', 'shout', '!'],
     execute(params) {
         let command = params.command;

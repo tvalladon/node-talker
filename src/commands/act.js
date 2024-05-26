@@ -34,8 +34,8 @@ const _ = require("lodash");
 
 module.exports = {
     name: "act",
-    description: "This command lets you broadcast an action in various scopes. Use 'act <message>' to send an action in the same room, 'lact <message>' to broadcast your action in the same and adjacent rooms, or 'gact <message>' to broadcast your action globally across the server. This allows you to control the reach of your message.",
-    help: "Use 'act <message>', 'lact <message>', or 'gact <message>' to broadcast an action. Each command broadcasts to a different range: 'act' for the same room, 'lact' for local rooms, and 'gact' for global.",
+    description: "This command lets you broadcast an action in various scopes.",
+    help: "Use [c:act <message>], [c:lact <message>], or [c:gact <message>] to broadcast an action. Each command broadcasts to a different range: 'act' for the same room, 'lact' for local rooms, and 'gact' for global.",
     aliases: ['lact', 'gact', 'me', 'lme', 'gme'],
     execute(params) {
         let command = params.command;

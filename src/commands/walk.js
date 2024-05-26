@@ -31,8 +31,8 @@ const _ = require("lodash");
 
 module.exports = {
     name: "walk",
-    description: "This command allows you to move in a specific direction or perform various movements. Movements can be actions like 'walk', 'swim', 'fly', 'run', etc. Directions can be full words like 'north', 'south', etc., or their abbreviations like 'n' for north, 's' for south, etc. You can also use directional commands independently to move in that direction. For example, 'north' or 'n' will move you north.",
-    help: "Use '<movement type> <direction>' or '<direction>' to move. Example: 'walk north', 'fly up' or simply 'north'. You can also use abbreviations for directions.",
+    description: "This command allows you to move in a specific direction or perform various movements.",
+    help: "Movements can be actions like 'walk', 'swim', 'fly', 'run', etc. Directions can be full words like 'north', 'south', etc., or their abbreviations like 'n' for north, 's' for south, etc. You can also use directional commands independently to move in that direction. For example, [c:north] or [c:n] will move you north. Use [c:<movement type> <direction>] or [c:<direction>] to move. Example: [c:walk north], [c:fly up] or simply [c:north]. You can also use abbreviations for directions.",
     aliases: ["go", "n", "north", "s", "south", "e", "east", "w", "west", "u", "up", "d", "down", "ne", "northeast", "nw", "northwest", "se", "southeast", "sw", "southwest", "swim", "fly", "crawl", "jog", "run", "fall", "skip", "glide", "dance", "wiggle", "float", "trip", "escape", "fight", "claw", "jump", "sneak"],
     execute(params) {
         let command = params.command;

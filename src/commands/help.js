@@ -11,7 +11,7 @@
 module.exports = {
     name: 'help',
     description: "This command lists all available commands with their brief descriptions or provides detailed help on a specific command when followed by the command's name.",
-    help: "Use 'help' to get a list of all commands with their descriptions or 'help <command>' to get a detailed description and usage for a specific command. Using 'help command' will also show available aliases.",
+    help: "Use [c:help] to get a list of all commands with their descriptions or [c:help <command>] to get a detailed description and usage for a specific command. Using [c:help <command>] will also show available aliases.",
     aliases: ["?"],
     execute(params) {
         let command = params.command;
@@ -26,7 +26,7 @@ module.exports = {
 
         // Helper function to construct detailed help message for a specific command
         const getDetailedCommandHelp = (commandObj) => {
-            let helpMessage = `<yellow>${commandObj.name}<reset><sl>${commandObj.help}<sl>${commandObj.description}<sl>`;
+            let helpMessage = `<yellow>${commandObj.name}<reset><sl>${commandObj.description}<sl>${commandObj.help}<sl>`;
             if (commandObj.aliases.length) {
                 helpMessage += `Aliases: ${commandObj.aliases.join(', ')}<sl>`;
             }
@@ -34,7 +34,7 @@ module.exports = {
         };
 
         // Helper function to collect unique command names and avoid duplicates through aliases
-        const getMainCommandsHelp = () => mainCommands.map(commandObj => `<yellow>${commandObj.name}<reset>: ${commandObj.help}<sl>`).join('');
+        const getMainCommandsHelp = () => mainCommands.map(commandObj => `<yellow>${commandObj.name}<reset>: ${commandObj.description}<sl>`).join('');
 
         if (data) {
             // User typed 'help <command>', display detailed help including aliases

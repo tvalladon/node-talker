@@ -19,8 +19,8 @@ const _ = require("lodash");
 
 module.exports = {
     name: "user",
-    description: "This command allows you to create and login to user accounts.",
-    help: "Use [c:user create firstName lastName password] to create an account, [c:user login firstName lastName password] to login to an account.",
+    description: "This command allows you to create, login or modify player accounts.",
+    help: "Use [c:user create firstName lastName password] to create an account, [c:user login firstName lastName password] to login to an account, [c:user get <key>] to see player values or [c:user set <key> <value>] to set player values.",
     aliases: [],
     execute(params) {
         let command = params.command;
@@ -42,7 +42,7 @@ module.exports = {
 
         const args = data.split(' ');
 
-        if (!['create', 'login'].includes(args[0])) {
+        if (!['create', 'login', 'set', 'get'].includes(args[0])) {
             userManager.send(user.id, `Usage: ${this.help}<sl>`);
             return;
         } else if (['create', 'login'].includes(args[0]) && args.length !== 4) {
@@ -79,7 +79,7 @@ module.exports = {
                     // Instead of reassigning user, update its properties in-place
                     Object.assign(user, persistedUser);
 
-                    userManager.send(user.id, `Account created, you are now [p:${user.firstName} ${user.lastName}].<sl>`);
+                    userManager.send(user.id, `Account created, you are now [p:${user.firstName} ${user.lastName}].<sl>Please use [c:user get] and [c:user set] to update your profile description and title as needed.<sl>`);
                 } catch (error) {
                     userManager.send(user.id, error.message);
                     return;

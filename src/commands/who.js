@@ -18,7 +18,8 @@
 module.exports = {
     name: "who",
     description: "This command lists all active users in the server.",
-    help: "Use 'who' to see a list of all active users in the server.",
+    help: "Use [c:who] to see a list of all active users in the server. Users in menus or another status are not considered active.",
+    aliases: [],
     execute(params) {
         let userManager = params.userManager;
 
