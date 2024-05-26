@@ -68,6 +68,7 @@ class ClientHandler extends Base {
         this.client.on("close", () => {
             this.logInfo("Client disconnected");
             this.user.online = false; // mark the user as offline
+            userManager.save(this.user);
             userManager.removeUser(this.user.id); // remove the user from the list
             userManager.broadcast(`<sl>[p:${this.user.firstName} ${this.user.lastName}] has disconnected.`); // Notify all users about the disconnection
         });

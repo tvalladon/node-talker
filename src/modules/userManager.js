@@ -104,34 +104,26 @@ class UserManager extends Base {
      * @param {Object} user - The user object to save
      */
     save(user) {
-        try {
-            // Do not save if temporary is true
-            if (user.temporary !== true) {
-                const filePath = path.join(process.env.DB_PATH, 'users', `${user.id}.json`);
 
-                // Check if user file already exists
-                if (fs.existsSync(filePath)) {
-                    // If file exists, load its content and check first and last names
-                    let existingUser = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        // Do not save if temporary is true
+        if (user.temporary !== true) {
+            const filePath = path.join(process.env.DB_PATH, 'users', `${user.id}.json`);
 
-                    // If first and last names don't match, throw an error
-                    if (existingUser.firstName !== user.firstName || existingUser.lastName !== user.lastName) {
-                        throw new Error("First and last name don't match with existing user data.");
-                    }
+            // Check if user file already exists
+            if (fs.existsSync(filePath)) {
+                // If file exists, load its content and check first and last names
+                let existingUser = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+                // If first and last names don't match, throw an error
+                if (existingUser.firstName !== user.firstName || existingUser.lastName !== user.lastName) {
+                    throw new Error("First and last name don't match with existing user data.");
                 }
-
-                // Create simplified user object excluding 'client', 'eventEmitter', 'status', 'online'
-                const simplifiedUser = _.omit(user, ['client', 'eventEmitter', 'status', 'online']);
-
-                fs.writeFileSync(filePath, JSON.stringify(simplifiedUser));
-            } else {
-                throw new Error("Can not save temporary user.");
             }
-        } catch (err) {
-            // Log the error to console
-            console.error(err);
-            // Return false in case of an error
-            return false;
+
+            // Create simplified user object excluding 'client', 'eventEmitter', 'status', 'online'
+            const simplifiedUser = _.omit(user, ['client', 'eventEmitter', 'status', 'online']);
+
+            fs.writeFileSync(filePath, JSON.stringify(simplifiedUser));
         }
     }
 
@@ -235,8 +227,9 @@ class UserManager extends Base {
      *
      * @param {Array|string} userIds - Array of user IDs or a single user ID string.
      * @param {string} message - The message to send.
+     * @param {boolean} format - Should the message be formatted? Default: true
      */
-    send(userIds, message) {
+    send(userIds, message, format = true) {
         // Convert userId to an array if it's a string
         if (typeof userIds === "string") {
             userIds = [userIds];
@@ -245,7 +238,11 @@ class UserManager extends Base {
         _.forEach(userIds, (id) => {
             const user = this.getUser({id});
             if (user && user.client) {
-                user.client.write(this.format(`${message}`, user));
+                if (format === true) {
+                    user.client.write(this.format(`${message}`, user));
+                } else {
+                    user.client.write(`${message}`);
+                }
             } else {
                 console.log(`User with id ${id.id} not found or offline.`);
             }
@@ -294,7 +291,5 @@ class UserManager extends Base {
     }
 }
 
-const
-    userManager = new UserManager();
-module
-    .exports = userManager;
+const userManager = new UserManager();
+module.exports = userManager;
