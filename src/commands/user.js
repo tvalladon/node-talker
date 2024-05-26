@@ -68,7 +68,7 @@ module.exports = {
                     let hashedData = userManager.hashPassword(password);
 
                     // Clone the user and update its relevant properties
-                    let tempUser = {...user, ...hashedData, firstName, lastName, temporary: false};
+                    let tempUser = {...user, ...hashedData, firstName, lastName, temporary: false, role: 'player'};
 
                     let persistedUser = userManager.create(tempUser);
                     if (!persistedUser) {
@@ -79,6 +79,7 @@ module.exports = {
                     // Instead of reassigning user, update its properties in-place
                     Object.assign(user, persistedUser);
 
+                    userManager.send(user.id, `Account created, you are now [p:${user.firstName} ${user.lastName}].<sl>`);
                 } catch (error) {
                     userManager.send(user.id, error.message);
                     return;
@@ -93,7 +94,7 @@ module.exports = {
                     const persistedUser = userManager.verifyAndLoadUser(firstName, lastName, password);
                     // If all checks pass, update in-memory user
                     Object.assign(user, persistedUser);
-                    userManager.send(user.id, "Logged in successfully.<sl>");
+                    userManager.send(user.id, `Logged in successfully, you are now [p:${user.firstName} ${user.lastName}].<sl>`);
                 } catch (error) {
                     userManager.send(user.id, error.message);
                     return;
