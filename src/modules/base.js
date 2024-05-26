@@ -183,6 +183,12 @@ class Base {
             }
         }
 
+        // Remove ANSI color codes if the user doesn't support colors
+        !user.supportsColor && (text = text.replace(/\x1b\[\d+m/g, ''));
+
+        // Strip high ASCII characters if the user has supportsHighAscii set to false
+        !user.supportsHighAscii && (text = text.replace(/[\u0080-\uFFFF]/g, ''));
+
         return text;
     }
 }
