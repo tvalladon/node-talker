@@ -98,10 +98,18 @@ module.exports = {
         switch (command) {
             case 'yell':
             case '"':
+                if (user.role === 'ghost') {
+                    userManager.send(user.id, `Ghosts can not yell, please use [c:user create] to create an account.<sl>`);
+                    return;
+                }
                 sendLocally(user, data);
                 break;
             case 'shout':
             case '!':
+                if (user.role === 'ghost') {
+                    userManager.send(user.id, `Ghosts can not shout, please use [c:user create] to create an account.<sl>`);
+                    return;
+                }
                 sendGlobally(user, data);
                 break;
             default:

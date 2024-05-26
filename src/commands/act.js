@@ -98,10 +98,18 @@ module.exports = {
         switch (command) {
             case 'lact':
             case 'lme':
+                if (user.role === 'ghost') {
+                    userManager.send(user.id, `Ghosts can not lact, please use [c:user create] to create an account.<sl>`);
+                    return;
+                }
                 sendLocally(user, data);
                 break;
             case 'gact':
             case 'gme':
+                if (user.role === 'ghost') {
+                    userManager.send(user.id, `Ghosts can not gact, please use [c:user create] to create an account.<sl>`);
+                    return;
+                }
                 sendGlobally(user, data);
                 break;
             default:

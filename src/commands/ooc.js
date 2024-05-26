@@ -89,9 +89,17 @@ module.exports = {
 
         switch (command) {
             case 'looc':
+                if (user.role === 'ghost') {
+                    userManager.send(user.id, `Ghosts can not looc, please use [c:user create] to create an account.<sl>`);
+                    return;
+                }
                 sendLocally(user, data);
                 break;
             case 'gooc':
+                if (user.role === 'ghost') {
+                    userManager.send(user.id, `Ghosts can not gooc, please use [c:user create] to create an account.<sl>`);
+                    return;
+                }
                 sendGlobally(user, data);
                 break;
             default:

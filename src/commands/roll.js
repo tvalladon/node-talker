@@ -56,6 +56,10 @@ module.exports = {
 
         switch (command) {
             case 'lroll':
+                if (user.role === 'ghost') {
+                    userManager.send(user.id, `Ghosts can not lroll, please use [c:user create] to create an account.<sl>`);
+                    return;
+                }
                 // Get the current room exits
                 let exits = roomManager.loadRoom(user.zoneId, user.roomId).exits;
 
@@ -71,6 +75,10 @@ module.exports = {
                 });
                 break;
             case 'groll':
+                if (user.role === 'ghost') {
+                    userManager.send(user.id, `Ghosts can not groll, please use [c:user create] to create an account.<sl>`);
+                    return;
+                }
                 // Override targetUsers with all active users
                 targetUsers = userManager.getActiveUsers() || []
                 break;
