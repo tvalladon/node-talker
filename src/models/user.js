@@ -16,6 +16,7 @@ class User {
         this.status = "login"; // Set status to loggingIn to start with
         this.firstName = _.trim(_.sample(firstNames)); // Random first name
         this.lastName = _.trim(_.sample(lastNames)); // Random last name
+        this.role = 'ghost';
         this.password = '';
         this.temporary = true; // Temporary users are not saved to the database
         this.online = false; // User is not online initially
