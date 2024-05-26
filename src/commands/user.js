@@ -46,7 +46,7 @@ module.exports = {
             userManager.send(user.id, `Usage: ${this.help}<sl>`);
             return;
         } else if (['create', 'login'].includes(args[0]) && args.length !== 4) {
-            userManager.send(user.id, `C Usage: ${this.help}<sl>`);
+            userManager.send(user.id, `Usage: ${this.help}<sl>`);
             return;
         }
 
