@@ -7,7 +7,11 @@
  * @module UserManager
  */
 const Base = require("./base");
+const fs = require('fs');
+const path = require('path');
 const _ = require("lodash");
+const uuid = require("uuid");
+const crypto = require('crypto')
 
 class UserManager extends Base {
     constructor() {
@@ -15,6 +19,120 @@ class UserManager extends Base {
 
         this.users = [];
         this.log = null; // Initialize log to null
+    }
+
+    /**
+     * Creates and saves a new user object to the file system.
+     *
+     * @param {Object} userInfo - The user object to save, without ID which will be created
+     * @returns {Object} The saved user object
+     */
+    create(userInfo = {}) {
+        // Prepare a user object
+        const user = {
+            ...userInfo,
+            id: uuid.v4(),
+        };
+
+        // Define the user directory path
+        const userDirPath = path.join(process.env.DB_PATH, 'users');
+
+        // Get the list of user files
+        const userFiles = fs.readdirSync(userDirPath);
+
+        // Check if a user file with the same ID already exists
+        if (userFiles.includes(`${user.id}.json`)) {
+            throw new Error("User with this ID already exists.<sl>");
+        }
+
+        // Check all user files and make sure no user has same first and last name
+        for (let file of userFiles) {
+            const existingUser = JSON.parse(fs.readFileSync(path.join(userDirPath, file), 'utf-8'));
+            if (existingUser.firstName === user.firstName && existingUser.lastName === user.lastName) {
+                throw new Error("User with this first and last name already exists.<sl>");
+            }
+        }
+
+        // Omit specified properties from user object
+        const simplifiedUser = _.omit(user, ['client', 'eventEmitter', 'status', 'online']);
+
+        // Now all checks passed, save the simplified user
+        const filePath = path.join(userDirPath, `${simplifiedUser.id}.json`);
+        fs.writeFileSync(filePath, JSON.stringify(simplifiedUser));
+
+        return simplifiedUser;
+    }
+
+    /**
+     * Loads a user object from the file system.
+     *
+     * @param {String} userId - The ID of the user to load
+     * @throws {Error} If no user with the specified ID exists
+     *
+     * @return {Object} The loaded user
+     */
+    load(userId) {
+        const filePath = path.join(process.env.DB_PATH, 'users', `${userId}.json`);
+        if (fs.existsSync(filePath)) {
+            const userData = fs.readFileSync(filePath);
+            this.user = JSON.parse(userData);
+            return this.user;
+        } else {
+            return false;
+        }
+    }
+
+    verifyAndLoadUser(firstName, lastName, password) {
+        const userDirPath = path.join(process.env.DB_PATH, 'users');
+        const userFiles = fs.readdirSync(userDirPath);
+        for (let file of userFiles) {
+            const existingUser = JSON.parse(fs.readFileSync(path.join(userDirPath, file), 'utf-8'));
+            if (existingUser.firstName === firstName && existingUser.lastName === lastName) {
+                if (!this.checkPassword(password, existingUser.salt, existingUser.password)) {
+                    throw new Error('Incorrect password.<sl>');
+                } else {
+                    return this.load(existingUser.id);
+                }
+            }
+        }
+        throw new Error('User with the provided first and last name does not exist.<sl>');
+    }
+
+    /**
+     * Saves a user object to the file system.
+     *
+     * @param {Object} user - The user object to save
+     */
+    save(user) {
+        try {
+            // Do not save if temporary is true
+            if (user.temporary !== true) {
+                const filePath = path.join(process.env.DB_PATH, 'users', `${user.id}.json`);
+
+                // Check if user file already exists
+                if (fs.existsSync(filePath)) {
+                    // If file exists, load its content and check first and last names
+                    let existingUser = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+                    // If first and last names don't match, throw an error
+                    if (existingUser.firstName !== user.firstName || existingUser.lastName !== user.lastName) {
+                        throw new Error("First and last name don't match with existing user data.");
+                    }
+                }
+
+                // Create simplified user object excluding 'client', 'eventEmitter', 'status', 'online'
+                const simplifiedUser = _.omit(user, ['client', 'eventEmitter', 'status', 'online']);
+
+                fs.writeFileSync(filePath, JSON.stringify(simplifiedUser));
+            } else {
+                throw new Error("Can not save temporary user.");
+            }
+        } catch (err) {
+            // Log the error to console
+            console.error(err);
+            // Return false in case of an error
+            return false;
+        }
     }
 
     /**
@@ -146,7 +264,37 @@ class UserManager extends Base {
             }
         });
     }
+
+    /**
+     * Generates a new random salt and hashes a password using that salt.
+     *
+     * @param {string} password - Plain-text password to hash
+     * @returns {Object} An object containing the salt and the hashed password.
+     */
+    hashPassword(password) {
+        const salt = crypto.randomBytes(16).toString('hex'); // create a random salt
+        const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`); // create hash
+        return {
+            salt,
+            password: hash
+        };
+    }
+
+    /**
+     * Checks a password against a given salt and hash.
+     *
+     * @param {string} password - Password to check
+     * @param {string} salt - Salt that was used to hash the password
+     * @param {string} hash - Hash to check the password against
+     * @returns {boolean} Returns `true` if the generated hash matches the provided hash, `false` otherwise.
+     */
+    checkPassword(password, salt, hash) {
+        let generatedHash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+        return generatedHash === hash;
+    }
 }
 
-const userManager = new UserManager();
-module.exports = userManager;
+const
+    userManager = new UserManager();
+module
+    .exports = userManager;
