@@ -20,7 +20,7 @@
 
 const fs = require("fs");
 
-const SETTINGS_FILE = `${process.cwd()}/${process.env.DB_PATH}/settings.json`;
+const WELCOME_FILE = `${process.cwd()}/${process.env.DB_PATH}/welcome.json`;
 
 module.exports = {
     name: "welcome",
@@ -34,19 +34,19 @@ module.exports = {
         let roomManager = params.roomManager;
         let data = params.data;
 
-        readAndParseSettings().then(settings => {
+        readAndParseSettings().then(welcome => {
             if (!data) data = "1";
-            let pageNumber = calculatePageNumber(data, settings.welcomeCmdContents.length);
-            manageUserMessages(userManager, user, pageNumber, settings.welcomeCmdContents);
+            let pageNumber = calculatePageNumber(data, welcome.length);
+            manageUserMessages(userManager, user, pageNumber, welcome);
         }).catch(err => {
-            userManager.send(user.id, `An error occurred while reading the settings file. ${err}<sl>`);
+            userManager.send(user.id, `An error occurred while reading the welcome file. ${err}<sl>`);
         });
     }
 };
 
 async function readAndParseSettings() {
     try {
-        const data = await fs.promises.readFile(SETTINGS_FILE, 'utf8');
+        const data = await fs.promises.readFile(WELCOME_FILE, 'utf8');
         return JSON.parse(data);
     } catch (err) {
         console.error("Error occurred:", err);
@@ -59,12 +59,12 @@ function calculatePageNumber(args, totalPages) {
     return Math.max(1, Math.min(pageNumber, totalPages));
 }
 
-function manageUserMessages(userManager, user, pageNumber, settings) {
-    const pageContent = settings[pageNumber - 1];
+function manageUserMessages(userManager, user, pageNumber, welcome) {
+    const pageContent = welcome[pageNumber - 1];
 
-    userManager.send(user.id, '<sl>' + pageContent + `<sl>Page ${pageNumber} of ${settings.length}.`);
+    userManager.send(user.id, '<sl>' + pageContent + `<sl>Page ${pageNumber} of ${welcome.length}.`);
 
-    if (pageNumber < settings.length) {
+    if (pageNumber < welcome.length) {
         userManager.send(user.id, `To view the next page, use [c:welcome ${pageNumber + 1}]<sl>`);
     } else {
         userManager.send(user.id, `End of welcome page.<sl>`);

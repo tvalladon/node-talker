@@ -3,8 +3,5 @@
     "welcomeMessage": "Welcome to <server_name>, [p:<player_name>]!",
     "bannerMessage": "<cyan>What a nice banner!<reset>",
     "motdMessage": "MOTD: Be nice to each other.",
-    "spawnMessage": "... and BOOM! you exist ...",
-    "welcomeCmdContents": [
-        "Welcome text goes here, each array item is one page, add more pages as needed."
-    ]
+    "spawnMessage": "... and BOOM! you exist ..."
 }
