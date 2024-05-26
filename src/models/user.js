@@ -16,6 +16,10 @@ class User {
         this.status = "login"; // Set status to loggingIn to start with
         this.firstName = _.trim(_.sample(firstNames)); // Random first name
         this.lastName = _.trim(_.sample(lastNames)); // Random last name
+        this.title = "Ethereal Wanderer";
+        this.clothing = "A veil of mist that surrounds the ghostly form, concealing and revealing in equal measure.";
+        this.holding = "A compass that points towards mystical energies and ley lines, guiding the ghostly traveler through the astral plane.";
+        this.wielding = "A lantern that emits a soft, ghostly glow, providing ambient light that illuminates the surroundings with an otherworldly ambiance.";
         this.role = 'ghost';
         this.password = '';
         this.temporary = true; // Temporary users are not saved to the database

@@ -227,8 +227,12 @@ module.exports = {
         // display the user's own details
         const lookAtSelf = () => {
             userManager.send(user.id, `You look at yourself and see:<sl>`);
+            userManager.send(user.id, `<ht>Title: <green>${user.title}<reset><sl>`);
             userManager.send(user.id, `<ht>First Name: <green>${user.firstName}<reset><sl>`);
             userManager.send(user.id, `<ht>Last Name: <green>${user.lastName}<reset><sl>`);
+            userManager.send(user.id, `<ht>Clothing: <green>${user.clothing}<reset><sl>`);
+            userManager.send(user.id, `<ht>Holding: <green>${user.holding}<reset><sl>`);
+            userManager.send(user.id, `<ht>Wielding: <green>${user.wielding}<reset><sl>`);
             userManager.send(user.id, `<ht>Description: <green>${user.description}<reset><sl>`);
             userManager.send(
                 roomPeople.map((person) => person.id),
@@ -304,8 +308,12 @@ module.exports = {
                 // When exactly one person is found, outputs his/her details
                 let personFound = peopleFound[0];
                 userManager.send(user.id, `You look at ${personFound.firstName} ${personFound.lastName} and see:<sl>`);
+                userManager.send(user.id, `<ht>Title: <green>${personFound.title}<reset><sl>`);
                 userManager.send(user.id, `<ht>First Name: <green>${personFound.firstName}<reset><sl>`);
                 userManager.send(user.id, `<ht>Last Name: <green>${personFound.lastName}<reset><sl>`);
+                userManager.send(user.id, `<ht>Clothing: <green>${personFound.clothing}<reset><sl>`);
+                userManager.send(user.id, `<ht>Holding: <green>${personFound.holding}<reset><sl>`);
+                userManager.send(user.id, `<ht>Wielding: <green>${personFound.wielding}<reset><sl>`);
                 userManager.send(user.id, `<ht>Description: <green>${personFound.description}<reset><sl>`);
                 userManager.send(
                     roomPeople.map((person) => person.id),
