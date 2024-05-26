@@ -75,18 +75,22 @@ class ClientHandler extends Base {
 
         this.client.on("data", (data) => {
             try {
-                const cleanData = _.trim(_.toString(data));
+                let cleanData = _.trim(_.toString(data));
 
                 if (!this.checkTerminalCapabilities(cleanData)) {
                     if (cleanData) {
                         // Get the command name
-                        let commandName = _.first(_.split(cleanData, ' '));
+                        let commandName = _.first(_.split(cleanData, ' ')).toLowerCase();
 
                         // Check if the command exists
                         if (!_.includes(this.commandHandler.getAllCommands(), commandName)) {
                             userManager.send(this.user.id, `Command or alias "${commandName}" not found.<sl>`);
                             return false;
                         }
+
+                        let cleanDataArray = cleanData.split(' ');
+                        cleanDataArray[0] = cleanDataArray[0].toLowerCase();
+                        cleanData = cleanDataArray.join(' ');
 
                         // Handle the command
                         this.commandHandler.handleCommands({
