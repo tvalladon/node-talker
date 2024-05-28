@@ -44,7 +44,7 @@ module.exports = {
 
         // Broadcast the 'message' to all users in the room
         const sendInRoom = (user, data) => {
-            userManager.send(user.id, `You ooc: ${data}\n`);
+            userManager.send(user.id, `You ooc: ${data}<sl>`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
@@ -53,7 +53,7 @@ module.exports = {
 
         // Broadcast the 'message' to all users in the room and adjacent rooms
         const sendLocally = (user, data) => {
-            userManager.send(user.id, `You ${data}\n`);
+            userManager.send(user.id, `You ${data}<sl>`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
@@ -80,7 +80,7 @@ module.exports = {
         // Broadcast the message to all users
         const sendGlobally = (user, message) => {
             // The message that the current user will see
-            userManager.send(user.id, `(globally) You ${message}\n`);
+            userManager.send(user.id, `(globally) You ${message}<sl>`);
             // Get all users in the same room
             let allUsers = userManager.getActiveUsers().filter((activeUser) => activeUser.id !== user.id) || [];
             // The message that other users on the server will see
