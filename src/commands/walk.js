@@ -134,7 +134,6 @@ module.exports = {
             burst: "bursts",
             bust: "busts",
             canter: "canters",
-            cant: "cants",
             careen: "careens",
             cavort: "cavorts",
             circle: "circles",
