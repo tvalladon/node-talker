@@ -206,7 +206,7 @@ module.exports = {
 
             const peopleInRoomNames = roomPeople.map((user) => `[p:${user.firstName} ${user.lastName}]`) || [];
 
-            userManager.send(user.id, `<yellow>{ <cyan>${roomName}<reset> <yellow>}<reset><sl>`);
+            userManager.send(user.id, `<yellow>{ <cyan>${roomName}<reset> <yellow>}<reset>${user.role === "administrator" ? ' [' + currentRoom.zoneId + ':' + currentRoom.roomId + ']' : ''}<sl>`);
             userManager.send(user.id, `${roomDescription}<sl>`);
             userManager.send(
                 user.id,
