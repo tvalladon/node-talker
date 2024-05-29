@@ -133,11 +133,6 @@ class ClientHandler extends Base {
     sendUserBanner() {
         let bannerMessage = (this.settings.bannerMessage || process.env.BANNER_MESSAGE || 'SERVER BANNER');
 
-        // If the user supports high ascii, replace * with ¤
-        if (this.user.supportsHighAscii) {
-            bannerMessage = bannerMessage.replace(/\*/g, '◉'); //\u263A');
-        }
-
         userManager.send([this.user.id], '<sl>' + bannerMessage + '<sl>');
     }
 
