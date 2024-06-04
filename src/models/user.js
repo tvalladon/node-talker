@@ -20,8 +20,8 @@ class User {
         this.clothing = "A veil of mist that surrounds the ghostly form, concealing and revealing in equal measure.";
         this.holding = "A compass that points towards mystical energies and ley lines, guiding the ghostly traveler through the astral plane.";
         this.wielding = "A lantern that emits a soft, ghostly glow, providing ambient light that illuminates the surroundings with an otherworldly ambiance.";
-        this.role = 'ghost';
-        this.password = '';
+        this.role = "visitor";
+        this.password = "";
         this.temporary = true; // Temporary users are not saved to the database
         this.online = false; // User is not online initially
         this.client = null; // to hold the reference to the client
