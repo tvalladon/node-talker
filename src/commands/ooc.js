@@ -27,7 +27,7 @@ module.exports = {
     name: "ooc",
     description: "This command lets you broadcast a message in various scopes.",
     help: "Use [c:ooc <message>], [c:looc <message>], or [c:gooc <message>] to broadcast a message. Each command broadcasts to a different range: 'ooc' for the same room, 'looc' for local rooms, and 'gooc' for global.",
-    aliases: ['looc', 'gooc'],
+    aliases: ["looc", "gooc"],
     execute(params) {
         let command = params.command;
         let user = params.user;
@@ -37,10 +37,9 @@ module.exports = {
 
         // Error checking for valid message
         if (!data) {
-            userManager.send(user.id, 'You need to provide something to ooc!<sl>');
+            userManager.send(user.id, "You need to provide something to ooc!<sl>");
             return;
         }
-
 
         // Broadcast the 'message' to all users in the room
         const sendInRoom = (user, data) => {
@@ -48,7 +47,10 @@ module.exports = {
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
-            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] ooc: ${data}<sl>`);
+            userManager.send(
+                usersInRoom.map((person) => person.id),
+                `<sl>[p:${user.firstName} ${user.lastName}] OOC, "${data}"<sl>`
+            );
         };
 
         // Broadcast the 'message' to all users in the room and adjacent rooms
@@ -57,7 +59,10 @@ module.exports = {
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
-            userManager.send(usersInRoom.map((person) => person.id), `<sl>[p:${user.firstName} ${user.lastName}] looc: ${data}<sl>`);
+            userManager.send(
+                usersInRoom.map((person) => person.id),
+                `<sl>[p:${user.firstName} ${user.lastName}] LOOC, "${data}"<sl>`
+            );
 
             // Fetch current room
             let currentRoom = roomManager.loadRoom(user.zoneId, user.roomId);
@@ -67,13 +72,16 @@ module.exports = {
 
             // Iterate through the exits
             _.forEach(exits, function (value) {
-                [nextZoneId, nextRoomId] = value.split(':');
+                [nextZoneId, nextRoomId] = value.split(":");
 
                 // Get the users in the room that exit leads to
                 let usersInExit = userManager.getRoomUsers(nextZoneId, nextRoomId) || [];
 
                 // Send message to users in adjacent rooms
-                userManager.send(usersInExit.map((person) => person.id), `<sl>(from nearby) [p:${user.firstName} ${user.lastName}] looc: ${data}<sl>`);
+                userManager.send(
+                    usersInExit.map((person) => person.id),
+                    `<sl>(from nearby) [p:${user.firstName} ${user.lastName}] LOOC, "${data}"<sl>`
+                );
             });
         };
 
@@ -84,20 +92,23 @@ module.exports = {
             // Get all users in the same room
             let allUsers = userManager.getActiveUsers().filter((activeUser) => activeUser.id !== user.id) || [];
             // The message that other users on the server will see
-            userManager.send(allUsers.map((person) => person.id), `<sl>(from somewhere) [p:${user.firstName} ${user.lastName}] gooc: ${message}<sl>`);
-        }
+            userManager.send(
+                allUsers.map((person) => person.id),
+                `<sl>(from somewhere) [p:${user.firstName} ${user.lastName}] GOOC, "${message}"<sl>`
+            );
+        };
 
         switch (command) {
-            case 'looc':
-                if (user.role === 'ghost') {
-                    userManager.send(user.id, `Ghosts can not looc, please use [c:user create] to create an account.<sl>`);
+            case "looc":
+                if (user.role === "visitor") {
+                    userManager.send(user.id, `Visitors can not looc, please use [c:user create] to create an account.<sl>`);
                     return;
                 }
                 sendLocally(user, data);
                 break;
-            case 'gooc':
-                if (user.role === 'ghost') {
-                    userManager.send(user.id, `Ghosts can not gooc, please use [c:user create] to create an account.<sl>`);
+            case "gooc":
+                if (user.role === "visitor") {
+                    userManager.send(user.id, `Visitors can not gooc, please use [c:user create] to create an account.<sl>`);
                     return;
                 }
                 sendGlobally(user, data);
@@ -106,5 +117,5 @@ module.exports = {
                 sendInRoom(user, data);
                 break;
         }
-    }
+    },
 };

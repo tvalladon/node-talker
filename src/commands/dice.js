@@ -1,11 +1,11 @@
 /**
- * Command name: roll
+ * Command name: dice
  * Description: This command lets you make a die roll and broadcast the result in various scopes.
  *
  * Usage:
- * "roll <dice>": Broadcast a message with roll result in the same room.
- * "lroll <dice>": Broadcast a message with roll result in the same and adjacent rooms.
- * "groll <dice>": Broadcast a message with roll result globally across the server.
+ * "dice <dice>": Broadcast a message with roll result in the same room.
+ * "ldice <dice>": Broadcast a message with roll result in the same and adjacent rooms.
+ * "gdice <dice>": Broadcast a message with roll result globally across the server.
  *
  * @param {object} params - A similar structure as the params in 'say' command.
  */
@@ -13,15 +13,15 @@
 const _ = require("lodash");
 
 module.exports = {
-    name: "roll",
+    name: "dice",
     description: "Roll dice with or without a modifier and with advantage or disadvantage.",
-    help: "Format: `<number of dice>d<dice sides>[+/-<modifier>][adv/dis]`. Examples: [c:roll 2d6+3], [c:roll 1d20-2], [c:roll 2d20adv], [c:roll 4d10-2dis]. Each command broadcasts to a different range: 'roll' for the same room, 'lroll' for local rooms, and 'groll' for global.",
-    aliases: ["lroll", "groll"],
+    help: "Format: `<number of dice>d<dice sides>[+/-<modifier>][adv/dis]`. Examples: [c:dice 2d6+3], [c:dice 1d20-2], [c:dice 2d20adv], [c:dice 4d10-2dis]. Each command broadcasts to a different range: 'dice' for the same room, 'ldice' for local rooms, and 'gdice' for global.",
+    aliases: ["ldice", "gdice"],
     execute(params) {
-        const {command, user, data, userManager, roomManager} = params;
+        const { command, user, data, userManager, roomManager } = params;
 
         if (!data) {
-            userManager.send(user.id, 'You need to provide dice information!<sl>');
+            userManager.send(user.id, "You need to provide dice information!<sl>");
             return;
         }
 
@@ -32,7 +32,7 @@ module.exports = {
             return;
         }
 
-        let output = '';
+        let output = "";
 
         let diceRolls = rollDice(diceData.count, diceData.sides);
 
@@ -55,9 +55,9 @@ module.exports = {
         let targetUsers = userManager.getRoomUsers(user.zoneId, user.roomId) || [];
 
         switch (command) {
-            case 'lroll':
-                if (user.role === 'ghost') {
-                    userManager.send(user.id, `Ghosts can not lroll, please use [c:user create] to create an account.<sl>`);
+            case "ldice":
+                if (user.role === "visitor") {
+                    userManager.send(user.id, `Visitors can not ldice, please use [c:user create] to create an account.<sl>`);
                     return;
                 }
                 // Get the current room exits
@@ -65,7 +65,7 @@ module.exports = {
 
                 // Iterate through the exits
                 _.forEach(exits, function (value) {
-                    const [nextZoneId, nextRoomId] = value.split(':');
+                    const [nextZoneId, nextRoomId] = value.split(":");
 
                     // Get the users in the room that the exit leads to
                     let usersInExit = userManager.getRoomUsers(nextZoneId, nextRoomId) || [];
@@ -74,21 +74,24 @@ module.exports = {
                     targetUsers = targetUsers.concat(usersInExit);
                 });
                 break;
-            case 'groll':
-                if (user.role === 'ghost') {
-                    userManager.send(user.id, `Ghosts can not groll, please use [c:user create] to create an account.<sl>`);
+            case "gdice":
+                if (user.role === "visitor") {
+                    userManager.send(user.id, `Visitors can not gdice, please use [c:user create] to create an account.<sl>`);
                     return;
                 }
                 // Override targetUsers with all active users
-                targetUsers = userManager.getActiveUsers() || []
+                targetUsers = userManager.getActiveUsers() || [];
                 break;
             default:
                 break;
         }
 
         // Send roll information to all targetUsers
-        userManager.send(targetUsers.map((person) => person.id), `[p:${user.firstName} ${user.lastName}] rolls: ${data}<sl>${output}`);
-    }
+        userManager.send(
+            targetUsers.map((person) => person.id),
+            `[p:${user.firstName} ${user.lastName}] rolls: ${data}<sl>${output}`
+        );
+    },
 };
 
 /**
@@ -104,15 +107,21 @@ module.exports = {
  * If a wrong input is detected, an object with an 'error' key and an error message is returned.
  */
 function parseDiceString(input) {
-
     // Define default parsed data
     let parsedData = {
-        count: null, sides: null, modifier: 0, with_advantage: false, with_disadvantage: false
+        count: null,
+        sides: null,
+        modifier: 0,
+        with_advantage: false,
+        with_disadvantage: false,
     };
 
     // Define the regular expressions
     const regexList = {
-        dice: /(\d+)d(\d+)/, modifier: /([-+]\d+)/, advantage: /(adv)/, disadvantage: /(dis)/,
+        dice: /(\d+)d(\d+)/,
+        modifier: /([-+]\d+)/,
+        advantage: /(adv)/,
+        disadvantage: /(dis)/,
     };
 
     // Function to execute regex on input and update parsedData
@@ -127,8 +136,8 @@ function parseDiceString(input) {
     };
 
     // Execute the function with each regex
-    updateParsedData(regexList.dice, 'count', 'sides');
-    updateParsedData(regexList.modifier, 'modifier');
+    updateParsedData(regexList.dice, "count", "sides");
+    updateParsedData(regexList.modifier, "modifier");
 
     // Update booleans for advantage and disadvantage
     if (input.match(regexList.advantage)) {
@@ -139,27 +148,33 @@ function parseDiceString(input) {
     }
 
     // List of conditions for error messaging
-    let errorCheckList = [{
-        condition: (parsedData.count < 1 || parsedData.count > 100),
-        errorMessage: "Count must be between 1 and 100."
-    }, {
-        condition: (parsedData.sides < 2 || parsedData.sides > 100),
-        errorMessage: "Sides must be between 2 and 100."
-    }, {
-        condition: (parsedData.modifier < -100 || parsedData.modifier > 100),
-        errorMessage: "Modifier must be between -100 and 100."
-    }, {
-        condition: (parsedData.with_advantage && parsedData.with_disadvantage),
-        errorMessage: "A dice roll cannot be both with advantage and disadvantage."
-    }, {
-        condition: ((parsedData.with_advantage || parsedData.with_disadvantage) && parsedData.count % 2 !== 0),
-        errorMessage: "Number of dice must be even when rolling with advantage/disadvantage."
-    },];
+    let errorCheckList = [
+        {
+            condition: parsedData.count < 1 || parsedData.count > 100,
+            errorMessage: "Count must be between 1 and 100.",
+        },
+        {
+            condition: parsedData.sides < 2 || parsedData.sides > 100,
+            errorMessage: "Sides must be between 2 and 100.",
+        },
+        {
+            condition: parsedData.modifier < -100 || parsedData.modifier > 100,
+            errorMessage: "Modifier must be between -100 and 100.",
+        },
+        {
+            condition: parsedData.with_advantage && parsedData.with_disadvantage,
+            errorMessage: "A dice roll cannot be both with advantage and disadvantage.",
+        },
+        {
+            condition: (parsedData.with_advantage || parsedData.with_disadvantage) && parsedData.count % 2 !== 0,
+            errorMessage: "Number of dice must be even when rolling with advantage/disadvantage.",
+        },
+    ];
 
     // Loop over each error condition and return if one is met
-    for (let {condition, errorMessage} of errorCheckList) {
+    for (let { condition, errorMessage } of errorCheckList) {
         if (condition) {
-            return {error: errorMessage};
+            return { error: errorMessage };
         }
     }
 
@@ -176,7 +191,7 @@ function parseDiceString(input) {
  */
 function rollDice(count, sides) {
     // Input type checking
-    if (typeof count !== 'number' || typeof sides !== 'number') {
+    if (typeof count !== "number" || typeof sides !== "number") {
         throw new Error("Both count and sides must be a number");
     }
 
@@ -208,20 +223,20 @@ function rollDice(count, sides) {
  */
 function calculateDiceRolls(dice, modifier = 0) {
     // Error checking - if dice is not an array or modifier is not a number, throw an Error
-    if (!Array.isArray(dice) || typeof modifier !== 'number') {
-        throw new Error('Invalid arguments. Ensure dice is an array and modifier (if provided) is a number.');
+    if (!Array.isArray(dice) || typeof modifier !== "number") {
+        throw new Error("Invalid arguments. Ensure dice is an array and modifier (if provided) is a number.");
     }
 
     // Error checking - if any element of dice is not a number, throw an Error
-    if (dice.some(die => typeof die !== 'number')) {
-        throw new Error('Invalid arguments. Elements of dice array must be numbers.');
+    if (dice.some((die) => typeof die !== "number")) {
+        throw new Error("Invalid arguments. Elements of dice array must be numbers.");
     }
 
     // Calculate the sum of the dice array
     const sum = dice.reduce((a, b) => a + b, 0);
 
     // Start building the result string
-    let result = `${dice.join(', ')} = ${sum}`;
+    let result = `${dice.join(", ")} = ${sum}`;
 
     // If a modifier exists and is not zero, append it and the total to the result string
     if (modifier > 0) {
