@@ -43,6 +43,7 @@ module.exports = {
         let userManager = params.userManager;
         let roomManager = params.roomManager;
         let data = params.data;
+        let {logInfo, logWarn, logError} = params.log;
 
         // Error checking for valid message
         if (!data) {
@@ -115,6 +116,8 @@ module.exports = {
                     return;
                 }
                 sendLocally(user, data);
+
+                logInfo('communication', {type:'lact', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             case "gact":
             case "gme":
@@ -123,9 +126,13 @@ module.exports = {
                     return;
                 }
                 sendGlobally(user, data);
+
+                logInfo('communication', {type:'gact', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             default:
                 sendInRoom(user, data);
+
+                logInfo('communication', {type:'act', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
         }
     },

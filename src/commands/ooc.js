@@ -34,6 +34,7 @@ module.exports = {
         let userManager = params.userManager;
         let roomManager = params.roomManager;
         let data = params.data;
+        let {logInfo, logWarn, logError} = params.log;
 
         // Error checking for valid message
         if (!data) {
@@ -105,6 +106,8 @@ module.exports = {
                     return;
                 }
                 sendLocally(user, data);
+
+                logInfo('communication', {type:'looc', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             case "gooc":
                 if (user.role === "visitor") {
@@ -112,9 +115,13 @@ module.exports = {
                     return;
                 }
                 sendGlobally(user, data);
+
+                logInfo('communication', {type:'gooc', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             default:
                 sendInRoom(user, data);
+
+                logInfo('communication', {type:'ooc', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
         }
     },

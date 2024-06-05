@@ -13,9 +13,9 @@
  * "shout Hello World" - User shouts a message globally across the server.
  *
  * Abbreviated commands are also available for convenience.
- * Single quote (') for "say"
- * Double quotes (") for "yell"
- * Exclamation mark (!) for "shout"
+ * Single quote ' for "say"
+ * Double quotes " for "yell"
+ * Exclamation mark ! for "shout"
  *
  * E.g:
  * "' Hi everyone" - Equivalent to "say Hi everyone"
@@ -43,6 +43,7 @@ module.exports = {
         let userManager = params.userManager;
         let roomManager = params.roomManager;
         let data = params.data;
+        let {logInfo, logWarn, logError} = params.log;
 
         // Error checking for valid message
         if (!data) {
@@ -55,6 +56,7 @@ module.exports = {
             userManager.send(user.id, `You say: ${data}<sl>`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
+
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
@@ -115,6 +117,8 @@ module.exports = {
                     return;
                 }
                 sendLocally(user, data);
+
+                logInfo('communication', {type:'yell', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             case "shout":
             case "!":
@@ -123,9 +127,13 @@ module.exports = {
                     return;
                 }
                 sendGlobally(user, data);
+
+                logInfo('communication', {type:'shout', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             default:
                 sendInRoom(user, data);
+
+                logInfo('communication', {type:'say', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
         }
     },

@@ -19,6 +19,7 @@ module.exports = {
     aliases: ["ldice", "gdice"],
     execute(params) {
         const { command, user, data, userManager, roomManager } = params;
+        let {logInfo, logWarn, logError} = params.log;
 
         if (!data) {
             userManager.send(user.id, "You need to provide dice information!<sl>");
@@ -73,6 +74,8 @@ module.exports = {
                     // Append usersInExit to the targetUsers array
                     targetUsers = targetUsers.concat(usersInExit);
                 });
+
+                logInfo('communication', {type:'ldice', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             case "gdice":
                 if (user.role === "visitor") {
@@ -81,8 +84,12 @@ module.exports = {
                 }
                 // Override targetUsers with all active users
                 targetUsers = userManager.getActiveUsers() || [];
+
+                logInfo('communication', {type:'gdice', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             default:
+
+                logInfo('communication', {type:'dice', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
         }
 
