@@ -8,9 +8,12 @@
 const fs = require("fs");
 const path = require("path");
 const Room = require("../models/room");
+const Base = require("./base");
 
-class RoomManager {
+class RoomManager extends Base {
     constructor(params) {
+        super(); // Call the constructor of the base class
+
         this.rooms = new Map();
         this.roomPath = params.roomPath;
     }
@@ -117,6 +120,35 @@ class RoomManager {
      */
     pad(number) {
         return String(number).padStart(3, "0");
+    }
+
+    /**
+     * Unloads a room specified by zone ID and room ID.
+     * Checks if room is already unloaded and if not, removes the room data from the Map.
+     *
+     * @param {number} zoneId - Zone ID.
+     * @param {number} roomId - Room ID.
+     * @returns {boolean} - Result of the operation, returns false if room is not found.
+     */
+    unloadRoom(zoneId, roomId) {
+        try {
+            // Check if the room is already loaded
+            const roomKey = this.getRoomKey(zoneId, roomId);
+
+            if (!this.rooms.has(roomKey)) {
+                this.logError(`Room ${roomKey} is not loaded.`);
+                return false;
+            }
+
+            // Unload the room
+            this.rooms.delete(roomKey);
+
+            this.logInfo(`Room ${roomKey} has been successfully unloaded.`);
+            return true;
+        } catch (error) {
+            this.logError(`Error unloading room ${roomKey}: ${error.message}`);
+            return false;
+        }
     }
 }
 

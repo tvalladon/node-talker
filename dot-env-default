@@ -4,6 +4,7 @@ LOGS_PATH=logs
 SERVER_NAME=node talker server
 START_ZONE=000
 START_ROOM=000
+UNLOAD_EMPTY_ROOMS_INTERVAL_MINUTES=30
 MOTD_MESSAGEE=MOTD: Be nice to others.
 SPAWN_MESSAGEE=... and BOOM! you exist ...
 USERNAME_FIRST=bastion,umbrella,mandate,quill,violin,graphic,hawk,wagon,optimal,caliper,shard,dolphin,indigo,sparrow,context,lingo,quartz,fossil,barrier,ornament,credo,influx,pixel,hydra,dismiss,kernel,harmony,arcade,plankton,dynamo,crimson,zephyr,caboose,journal,sunrise,bazaar,narrator,jigsaw,vertigo,maestro,liberty,oasis,meadow,genesis,icon,epoxy,nuance,keystone,qubit,monarch,halcyon,osprey,blizzard,phantom,lemonade,metronome,quorum,vortex,karma,domino,octave,quadrant,dynasty,glacier,cascade,holistic,omnidirectional,emerald,ginger,havoc,sprout,fragment,vendor,maelstrom,lexicon,gusto,quicksilver,armor,discourse,bovine,charcoal,crusader,macadam,hemisphere,resonance,nexus,astral,parody,frostbite,qualm,gramophone,veteran,clangor,macaroon,broomstick,hocuspocus,idyllic,coronation,ascend,ballroom,dove,rhapsody,menagerie,yacht,sable,vanilla,platform

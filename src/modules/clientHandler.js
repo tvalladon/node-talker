@@ -20,6 +20,11 @@ class ClientHandler extends Base {
         this.client = params.client; // Copy the client object ot this.client
         this.roomManager = params.roomManager;
         this.commandHandler = params.commandHandler;
+        this.userManager = userManager;
+
+        if(!this.client) {
+            return;
+        }
 
         this.logInfo("Client connected"); // Log client connection
 
