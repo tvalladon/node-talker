@@ -41,6 +41,7 @@ class RoomManager {
         try {
             // Check if the room is already loaded
             const roomKey = this.getRoomKey(zoneId, roomId);
+
             if (this.rooms.has(roomKey)) {
                 return this.rooms.get(roomKey);
             }
@@ -56,7 +57,12 @@ class RoomManager {
             delete require.cache[require.resolve(filePath)];
 
             const roomData = require(filePath);
-            return new Room(roomData);
+            const room = new Room(roomData);
+
+            // Add the loaded room to the map
+            this.rooms.set(roomKey, room);
+
+            return room;
         } catch (error) {
             console.error(`Error loading room ${zoneId}:${roomId}: ${error.message}`);
             return false;
