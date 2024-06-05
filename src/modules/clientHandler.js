@@ -8,7 +8,6 @@
  * - `roomManager`: A roomManager instance for manipulating room.
  * - `commandHandler`: A commandHandler instance for handling commands
  */
-
 const _ = require("lodash");
 const Base = require("./base");
 const User = require("../models/user");

@@ -82,6 +82,16 @@ class UserManager extends Base {
         }
     }
 
+    /**
+     * Verify and load user.
+     *
+     * @param {string} firstName - The first name of the user.
+     * @param {string} lastName - The last name of the user.
+     * @param {string} password - The password of the user.
+     * @throws {Error} If the provided first and last name do not match any existing user.
+     * @throws {Error} If the provided password is incorrect.
+     * @returns {object} The loaded user object.
+     */
     verifyAndLoadUser(firstName, lastName, password) {
         const userDirPath = path.join(process.env.DB_PATH, 'users');
         const userFiles = fs.readdirSync(userDirPath);

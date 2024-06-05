@@ -112,7 +112,7 @@ class Base {
      *
      * @param {string} error - The error message to be logged.
      */
-    logError(error) {
+    logError = (error) => {
         const debouncedLogError = _.debounce(() => {
             this._log("error", "Client error", error);
         }, 1000);
@@ -126,7 +126,7 @@ class Base {
      * @param {string} message - The information message to be logged.
      * @param {null|object} data - Additional data to be logged.
      */
-    logInfo(message, data = null) {
+    logInfo = (message, data = null) => {
         this._log("info", message, data);
     }
 
@@ -136,7 +136,7 @@ class Base {
      * @param {string} message - The warning message to be logged.
      * @param {null|object} data - Additional data to be logged.
      */
-    logWarn(message, data = null) {
+    logWarn = (message, data = null) => {
         this._log("warn", message, data);
     }
 

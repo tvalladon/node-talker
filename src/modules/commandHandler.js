@@ -102,7 +102,12 @@ class CommandHandler extends Base {
                 roomManager: params.roomManager,
                 data: parameters,
                 context: params.context || "user",
-                commandHandler: this
+                commandHandler: this,
+                log: {
+                    logInfo: this.logInfo,
+                    logWarn: this.logWarn,
+                    logError: this.logError,
+                },
             });
             return true;
         } catch (err) {
