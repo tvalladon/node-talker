@@ -67,7 +67,7 @@ class RoomManager extends Base {
 
             return room;
         } catch (error) {
-            console.error(`Error loading room ${zoneId}:${roomId}: ${error.message}`);
+            this.logInfo(`Error loading room ${zoneId}:${roomId}: ${error.message}`);
             return false;
         }
     }
