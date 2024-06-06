@@ -41,7 +41,16 @@ class LogHandler {
      */
     log(level, params) {
         const logTemplate = _.template(`[${moment().format("YYYY-MM-DD HH:mm:ss")}][${level}]${_.map(Object.keys(params), (key) => `[${key}: ${params[key]}]`).join("")}`);
-        console.log(this.write(logTemplate({}), level === "DEBUG" ? "json" : "log"));
+
+        var message = this.write(logTemplate({}), level === "DEBUG" ? "json" : "log");
+
+        level = level.toLowerCase();
+
+        if (['info', 'warn', 'error', 'log', 'debug'].includes(level)) {
+            console[level](message);
+        } else {
+            console.log("unknown log level: " + level);
+        }
     }
 
     /**
