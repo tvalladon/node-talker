@@ -81,7 +81,7 @@ class CommandHandler extends Base {
      * @param {object} params - An object containing command instructions and context.
      * @returns {boolean} - A binary flag indicating whether the command has been executed.
      */
-    handleCommands(params = {}) {
+    async handleCommands(params = {}) {
         let message = params.data;
 
         // Split on the first space to separate command from arguments
@@ -95,7 +95,7 @@ class CommandHandler extends Base {
 
         // Execute the command with the provided parameters
         try {
-            command.execute({
+            await command.execute({
                 command: commandName,
                 user: params.user,
                 userManager: params.userManager,
@@ -112,6 +112,7 @@ class CommandHandler extends Base {
             return true;
         } catch (err) {
             // If there was an error while executing the command, log the error message
+            console.error(err);
             return false;
         }
     }

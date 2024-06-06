@@ -22,7 +22,7 @@ class ClientHandler extends Base {
         this.commandHandler = params.commandHandler;
         this.userManager = userManager;
 
-        if(!this.client) {
+        if (!this.client) {
             return;
         }
 
@@ -77,7 +77,7 @@ class ClientHandler extends Base {
             userManager.broadcast(`<sl>[p:${this.user.firstName} ${this.user.lastName}] has disconnected.`); // Notify all users about the disconnection
         });
 
-        this.client.on("data", (data) => {
+        this.client.on("data", async (data) => {
             try {
                 let cleanData = _.trim(_.toString(data));
 
@@ -89,6 +89,7 @@ class ClientHandler extends Base {
                         // Check if the command exists
                         if (!_.includes(this.commandHandler.getAllCommands(), commandName)) {
                             userManager.send(this.user.id, `Command or alias "${commandName}" not found.<sl>`);
+                            this.sendPrompt();
                             return false;
                         }
 
@@ -96,14 +97,29 @@ class ClientHandler extends Base {
                         cleanDataArray[0] = cleanDataArray[0].toLowerCase();
                         cleanData = cleanDataArray.join(' ');
 
-                        // Handle the command
-                        this.commandHandler.handleCommands({
+                        const commandResult = this.commandHandler.handleCommands({
                             user: this.user,
                             userManager,
                             roomManager: this.roomManager,
                             data: cleanData
                         });
+
+                        let didCommandSucceed;
+
+                        if (commandResult instanceof Promise) {
+                            didCommandSucceed = await commandResult;
+                        } else {
+                            didCommandSucceed = commandResult;
+                        }
+
+                        this.sendPrompt();
+                        if (!didCommandSucceed) {
+                            console.log('Error: Command handler execution failed');
+                        }
+                    } else {
+                        this.sendPrompt();
                     }
+                } else {
                     this.sendPrompt();
                 }
 
@@ -187,7 +203,6 @@ class ClientHandler extends Base {
             this.user.status = "active";
             userManager.broadcast(`<sl>[p:${this.user.firstName} ${this.user.lastName}] has connected.<sl>`); // Notify all users about the new connection
             userManager.moveUser(this.user.id, process.env.START_ZONE || '000', process.env.START_ROOM || '000');
-            this.sendPrompt();
         } else {
             return false;
         }
