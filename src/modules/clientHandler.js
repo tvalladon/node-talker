@@ -185,7 +185,9 @@ class ClientHandler extends Base {
      * It sends a predetermined prompt to the user.
      */
     sendPrompt() {
-        userManager.send([this.user.id], `[b:? for help][p:<player_name>] <red>:><reset> `);
+        if (this.user.status === 'active') {
+            userManager.send([this.user.id], `[b:? for help][p:<player_name>] <red>:><reset> `);
+        }
     }
 
     /**
