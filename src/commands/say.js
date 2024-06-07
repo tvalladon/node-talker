@@ -60,7 +60,7 @@ module.exports = {
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
-                `<sl>[p:${user.firstName} ${user.lastName}] says, "${data}"<sl>`
+                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] says, "${data}"<sl>`
             );
         };
 
@@ -72,7 +72,7 @@ module.exports = {
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
-                `<sl>[p:${user.firstName} ${user.lastName}] yells, "${data}"<sl>`
+                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] yells, "${data}"<sl>`
             );
 
             // Fetch current room
@@ -91,7 +91,7 @@ module.exports = {
                 // Send message to users in adjacent rooms
                 userManager.send(
                     usersInExit.map((person) => person.id),
-                    `<sl>(from nearby) [p:${user.firstName} ${user.lastName}] yells, "${data}"<sl>`
+                    `<sl>(from nearby) [p:${user.morphedName || user.firstName + " " + user.lastName}] yells, "${data}"<sl>`
                 );
             });
         };
@@ -105,7 +105,7 @@ module.exports = {
             // The message that other users on the server will see
             userManager.send(
                 allUsers.map((person) => person.id),
-                `<sl>[p:${user.firstName} ${user.lastName}] shouts, "${message}"<sl>`
+                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] shouts, "${message}"<sl>`
             );
         };
 

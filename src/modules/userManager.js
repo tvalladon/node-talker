@@ -54,7 +54,7 @@ class UserManager extends Base {
         }
 
         // Omit specified properties from user object
-        const simplifiedUser = _.omit(user, ['client', 'eventEmitter', 'status', 'online']);
+        const simplifiedUser = _.omit(user, ['client', 'eventEmitter', 'status', 'online', 'morphedName', 'morphedDescription']);
 
         // Now all checks passed, save the simplified user
         const filePath = path.join(userDirPath, `${simplifiedUser.id}.json`);
@@ -131,7 +131,7 @@ class UserManager extends Base {
             }
 
             // Create simplified user object excluding 'client', 'eventEmitter', 'status', 'online'
-            const simplifiedUser = _.omit(user, ['client', 'eventEmitter', 'status', 'online']);
+            const simplifiedUser = _.omit(user, ['client', 'eventEmitter', 'status', 'online', 'morphedName', 'morphedDescription']);
 
             fs.writeFileSync(filePath, JSON.stringify(simplifiedUser));
         }

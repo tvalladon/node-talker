@@ -26,6 +26,8 @@ class User {
         this.online = false; // User is not online initially
         this.client = null; // to hold the reference to the client
         this.description = `When you look at the newcomer's ghostly form, you see a spectral figure emerging from the swirling mists of the astral plane. Its shape shifts and coalesces in the ephemeral glow, solidifying into an enigmatic guise. This ethereal presence holds the promise of boundless imagination and adventure, inviting fellow travelers to explore the realms of myth and magic together.`;
+        this.morphedName = ""; // To store the morphed name
+        this.morphedDescription = ""; // To store the morphed description
 
         this.eventEmitter = new events.EventEmitter();
     }

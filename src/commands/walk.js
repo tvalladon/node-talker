@@ -310,7 +310,7 @@ module.exports = {
         // Move the user to the next room
         if (userManager.moveUser(user.id, nextZoneId, nextRoomId)) {
             // Message to display when leaving current room
-            const leavingMessage = `<sl>[p:<player_name>] ${verbTense} out of the room headed ${direction}.<sl>`;
+            const leavingMessage = `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verbTense} out of the room headed ${direction}.<sl>`;
 
             // Get the people in the current room
             const currentRoomPeople = userManager.getRoomUsers(zoneId, roomId).filter((currentRoomUser) => currentRoomUser.id !== user.id) || [];
@@ -319,7 +319,7 @@ module.exports = {
             userManager.send(currentRoomPeople.map((person) => person.id), leavingMessage);
 
             // Message to display upon entering the target room
-            const enteringMessage = `<sl>[p:<player_name>] ${verbTense} in from ${["up", "down"].includes(direction) ? "" : "the "}${getOppositeDirection(direction)}.<sl>`;
+            const enteringMessage = `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verbTense} in from ${["up", "down"].includes(direction) ? "" : "the "}${getOppositeDirection(direction)}.<sl>`;
 
             const nextRoomPeople = userManager.getRoomUsers(nextZoneId, nextRoomId).filter((nextRoomUser) => nextRoomUser.id !== user.id) || [];
 

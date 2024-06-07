@@ -204,7 +204,7 @@ module.exports = {
             const roomDescription = parseProps(unparsedDescription, props);
             const roomExits = currentRoom.exits || {};
 
-            const peopleInRoomNames = roomPeople.map((user) => `[p:${user.firstName} ${user.lastName}]`) || [];
+            const peopleInRoomNames = roomPeople.map((person) => `[p:${person.morphedName || person.firstName + " " + person.lastName}]`) || [];
 
             userManager.send(user.id, `<yellow>{ <cyan>${roomName}<reset> <yellow>}<reset>${user.role === "administrator" ? ' [' + currentRoom.zoneId + ':' + currentRoom.roomId + ']' : ''}<sl>`);
             userManager.send(user.id, `${roomDescription}<sl>`);
@@ -216,30 +216,38 @@ module.exports = {
             );
 
             userManager.send(user.id, `People: <red>${peopleInRoomNames.length > 0 ? peopleInRoomNames.join(", ") : "none"}<reset><sl>`);
-            if (params.context !== "emit")
+            if (params.context !== "emit") {
                 userManager.send(
                     roomPeople.map((person) => person.id),
-                    `<sl>[p:${user.firstName} ${user.lastName}] ${actionLookup["room"][command]} room.<sl>`
+                    `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["room"][command]} room.<sl>`
                 );
+            }
             return true;
         };
+
 
         // display the user's own details
         const lookAtSelf = () => {
             userManager.send(user.id, `You look at yourself and see:<sl>`);
-            userManager.send(user.id, `<ht>Title: <green>${user.title}<reset><sl>`);
-            userManager.send(user.id, `<ht>First Name: <green>${user.firstName}<reset><sl>`);
-            userManager.send(user.id, `<ht>Last Name: <green>${user.lastName}<reset><sl>`);
-            userManager.send(user.id, `<ht>Clothing: <green>${user.clothing}<reset><sl>`);
-            userManager.send(user.id, `<ht>Holding: <green>${user.holding}<reset><sl>`);
-            userManager.send(user.id, `<ht>Wielding: <green>${user.wielding}<reset><sl>`);
-            userManager.send(user.id, `<ht>Description: <green>${user.description}<reset><sl>`);
+            if (user.morphedName) {
+                userManager.send(user.id, `<ht>Name: <green>${user.morphedName}<reset><sl>`);
+                userManager.send(user.id, `<ht>Description: <green>${user.morphedDescription}<reset><sl>`);
+            } else {
+                userManager.send(user.id, `<ht>Title: <green>${user.title}<reset><sl>`);
+                userManager.send(user.id, `<ht>First Name: <green>${user.firstName}<reset><sl>`);
+                userManager.send(user.id, `<ht>Last Name: <green>${user.lastName}<reset><sl>`);
+                userManager.send(user.id, `<ht>Clothing: <green>${user.clothing}<reset><sl>`);
+                userManager.send(user.id, `<ht>Holding: <green>${user.holding}<reset><sl>`);
+                userManager.send(user.id, `<ht>Wielding: <green>${user.wielding}<reset><sl>`);
+                userManager.send(user.id, `<ht>Description: <green>${user.description}<reset><sl>`);
+            }
             userManager.send(
                 roomPeople.map((person) => person.id),
-                `<sl>[p:${user.firstName} ${user.lastName}] ${actionLookup["self"][command]} themselves.<sl>`
+                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["self"][command]} themselves.<sl>`
             );
             return true;
         };
+
 
         const lookInDirection = (direction) => {
             let roomExits = currentRoom.exits;
@@ -267,7 +275,7 @@ module.exports = {
             userManager.send(user.id, `${_.capitalize(direction)} you see <cyan>${nextRoomName}<reset>${exitMessage}${peopleMessage}.<sl>`);
             userManager.send(
                 roomPeople.map((person) => person.id),
-                `<sl>[p:${user.firstName} ${user.lastName}] ${actionLookup["direction"][command]} ${_.capitalize(direction)}.<sl>`
+                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["direction"][command]} ${_.capitalize(direction)}.<sl>`
             );
         };
 
@@ -282,42 +290,49 @@ module.exports = {
             userManager.send(user.id, `${propDescription}<sl>`);
             userManager.send(
                 roomPeople.map((person) => person.id),
-                `<sl>[p:${user.firstName} ${user.lastName}] ${actionLookup["prop"][command]} ${_.capitalize(propName)}.<sl>`
+                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["prop"][command]} ${_.capitalize(propName)}.<sl>`
             );
         };
 
         const lookAtPerson = (name) => {
-            // Split the input into potential first name and last name
-            let [firstName, lastName] = name.toLowerCase().split(" ");
+            // Split the input into potential name parts
+            let nameParts = name.toLowerCase().split(" ");
 
             // Get an array of people in the same room, excluding the current user
             let peopleInRoom = userManager.getActiveUsers().filter((activeUser) => activeUser.zoneId === zoneId && activeUser.roomId === roomId && activeUser.id !== user.id) || [];
 
             // Filter to find matching people in the same room
             let peopleFound = peopleInRoom.filter((user) => {
-                if (lastName) {
-                    // If looking for a full name
-                    return user.firstName.toLowerCase() === firstName && user.lastName.toLowerCase() === lastName;
-                } else {
-                    // If looking for either first or last name
-                    return user.firstName.toLowerCase() === firstName || user.lastName.toLowerCase() === firstName;
-                }
+                let fullName = (user.firstName + " " + user.lastName).toLowerCase();
+                let morphedName = user.morphedName ? user.morphedName.toLowerCase() : "";
+
+                // Check if the input name matches full name, morphed name, or any part of them
+                return (
+                    nameParts.every(part => fullName.includes(part)) ||
+                    (user.morphedName && nameParts.every(part => morphedName.includes(part)))
+                );
             });
 
             if (peopleFound.length === 1) {
-                // When exactly one person is found, outputs his/her details
+                // When exactly one person is found, output their details
                 let personFound = peopleFound[0];
-                userManager.send(user.id, `You look at ${personFound.firstName} ${personFound.lastName} and see:<sl>`);
-                userManager.send(user.id, `<ht>Title: <green>${personFound.title}<reset><sl>`);
-                userManager.send(user.id, `<ht>First Name: <green>${personFound.firstName}<reset><sl>`);
-                userManager.send(user.id, `<ht>Last Name: <green>${personFound.lastName}<reset><sl>`);
-                userManager.send(user.id, `<ht>Clothing: <green>${personFound.clothing}<reset><sl>`);
-                userManager.send(user.id, `<ht>Holding: <green>${personFound.holding}<reset><sl>`);
-                userManager.send(user.id, `<ht>Wielding: <green>${personFound.wielding}<reset><sl>`);
-                userManager.send(user.id, `<ht>Description: <green>${personFound.description}<reset><sl>`);
+                if (personFound.morphedName) {
+                    userManager.send(user.id, `You look at ${personFound.morphedName} and see:<sl>`);
+                    userManager.send(user.id, `<ht>Name: <green>${personFound.morphedName}<reset><sl>`);
+                    userManager.send(user.id, `<ht>Description: <green>${personFound.morphedDescription}<reset><sl>`);
+                } else {
+                    userManager.send(user.id, `You look at ${personFound.firstName} ${personFound.lastName} and see:<sl>`);
+                    userManager.send(user.id, `<ht>Title: <green>${personFound.title}<reset><sl>`);
+                    userManager.send(user.id, `<ht>First Name: <green>${personFound.firstName}<reset><sl>`);
+                    userManager.send(user.id, `<ht>Last Name: <green>${personFound.lastName}<reset><sl>`);
+                    userManager.send(user.id, `<ht>Clothing: <green>${personFound.clothing}<reset><sl>`);
+                    userManager.send(user.id, `<ht>Holding: <green>${personFound.holding}<reset><sl>`);
+                    userManager.send(user.id, `<ht>Wielding: <green>${personFound.wielding}<reset><sl>`);
+                    userManager.send(user.id, `<ht>Description: <green>${personFound.description}<reset><sl>`);
+                }
                 userManager.send(
                     roomPeople.map((person) => person.id),
-                    `<sl>[p:${user.firstName} ${user.lastName}] ${actionLookup["player"][command]} [p:${personFound.firstName} ${personFound.lastName}].<sl>`
+                    `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["player"][command]} [p:${personFound.morphedName || personFound.firstName + " " + personFound.lastName}].<sl>`
                 );
                 return true;
             } else if (peopleFound.length > 1) {
@@ -328,6 +343,7 @@ module.exports = {
                 return false;
             }
         };
+
 
         const lookAtItem = (item) => {
             // Your logic for examining an item

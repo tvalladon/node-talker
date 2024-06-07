@@ -96,7 +96,7 @@ module.exports = {
         // Send roll information to all targetUsers
         userManager.send(
             targetUsers.map((person) => person.id),
-            `[p:${user.firstName} ${user.lastName}] rolls: ${data}<sl>${output}`
+            `[p:${user.morphedName || user.firstName + " " + user.lastName}] rolls: ${data}<sl>${output}`
         );
     },
 };

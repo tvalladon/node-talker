@@ -59,7 +59,7 @@ module.exports = {
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
-                `<sl>[p:${user.firstName} ${user.lastName}] ${data}<sl>`
+                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<sl>`
             );
         };
 
@@ -71,7 +71,7 @@ module.exports = {
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
-                `<sl>[p:${user.firstName} ${user.lastName}] ${data}<sl>`
+                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<sl>`
             );
 
             // Fetch current room
@@ -90,7 +90,7 @@ module.exports = {
                 // Send message to users in adjacent rooms
                 userManager.send(
                     usersInExit.map((person) => person.id),
-                    `<sl>(from nearby) [p:${user.firstName} ${user.lastName}] ${data}<sl>`
+                    `<sl>(from nearby) [p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<sl>`
                 );
             });
         };
@@ -104,7 +104,7 @@ module.exports = {
             // The message that other users on the server will see
             userManager.send(
                 allUsers.map((person) => person.id),
-                `<sl>(from somewhere) [p:${user.firstName} ${user.lastName}] ${message}<sl>`
+                `<sl>(from somewhere) [p:${user.morphedName || user.firstName + " " + user.lastName}] ${message}<sl>`
             );
         };
 
