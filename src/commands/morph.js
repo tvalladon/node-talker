@@ -21,7 +21,7 @@ module.exports = {
         let data = params.data;
 
         if (!data) {
-            userManager.send(user.id, "Usage: morph set name <name> | morph set description <description> | morph revert<sl>");
+            userManager.send(user.id, "Usage: morph set name <name> | morph set description <description> | morph revert");
             return;
         }
 
@@ -41,7 +41,7 @@ module.exports = {
             });
 
             if (nameInUse) {
-                userManager.send(user.id, `The name [p:${value}] is already in use. Please choose a different name.<sl>`);
+                userManager.send(user.id, `The name [p:${value}] is already in use. Please choose a different name.`);
                 return;
             }
         }
@@ -51,25 +51,25 @@ module.exports = {
         if (action === 'set') {
             if (field === 'name') {
                 user.morphedName = value;
-                userManager.send(user.id, `Your morphed name has been set to [p:${value}].<sl>`);
+                userManager.send(user.id, `Your morphed name has been set to [p:${value}].`);
                 roomPeople.forEach(person => {
-                    userManager.send(person.id, `[p:${user.firstName} ${user.lastName}] has morphed into [p:${user.morphedName}].<sl>`);
+                    userManager.send(person.id, `[p:${user.firstName} ${user.lastName}] has morphed into [p:${user.morphedName}].`);
                 });
             } else if (field === 'description') {
                 user.morphedDescription = value;
-                userManager.send(user.id, `Your morphed description has been set.<sl>`);
+                userManager.send(user.id, `Your morphed description has been set.`);
             } else {
-                userManager.send(user.id, "Invalid field. Usage: morph set name <name> | morph set description <description><sl>");
+                userManager.send(user.id, "Invalid field. Usage: morph set name <name> | morph set description <description>");
             }
         } else if (action === 'revert') {
             roomPeople.forEach(person => {
-                userManager.send(person.id, `[p:${user.morphedName}] has reverted to [p:${user.firstName} ${user.lastName}].<sl>`);
+                userManager.send(person.id, `[p:${user.morphedName}] has reverted to [p:${user.firstName} ${user.lastName}].`);
             });
             user.morphedName = "";
             user.morphedDescription = "";
-            userManager.send(user.id, "You have reverted back to your normal form.<sl>");
+            userManager.send(user.id, "You have reverted back to your normal form.");
         } else {
-            userManager.send(user.id, "Invalid action. Usage: morph set name <name> | morph set description <description> | morph revert<sl>");
+            userManager.send(user.id, "Invalid action. Usage: morph set name <name> | morph set description <description> | morph revert");
         }
     }
 };

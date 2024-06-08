@@ -65,10 +65,11 @@ function calculatePageNumber(args, totalPages) {
 
 function manageUserMessages(userManager, user, pageNumber, welcome) {
     const pageContent = welcome[pageNumber - 1];
-    userManager.send(user.id, '<sl>' + pageContent + `<sl>Page ${pageNumber} of ${welcome.length}.`);
+    userManager.send(user.id, pageContent);
+    userManager.send(user.id, `Page ${pageNumber} of ${welcome.length}.`);
     if (pageNumber < welcome.length) {
-        userManager.send(user.id, `To view the next page, use [c:welcome ${pageNumber + 1}]<sl>`);
+        userManager.send(user.id, `To view the next page, use [c:welcome ${pageNumber + 1}]`);
     } else {
-        userManager.send(user.id, `End of welcome page.<sl>`);
+        userManager.send(user.id, `End of welcome page.`);
     }
 }

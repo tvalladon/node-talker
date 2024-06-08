@@ -101,7 +101,7 @@ module.exports = {
 
         // If direction is not valid, send error message
         if (!Object.values(directionMap).includes(direction)) {
-            userManager.send(user.id, `Invalid direction.<sl>`);
+            userManager.send(user.id, `Invalid direction.`);
             return;
         }
 
@@ -110,7 +110,7 @@ module.exports = {
 
         // If exit does not exist, send error message
         if (!exit) {
-            userManager.send(user.id, `There is no exit in that direction.<sl>`);
+            userManager.send(user.id, `There is no exit in that direction.`);
             return;
         }
 
@@ -119,7 +119,7 @@ module.exports = {
 
         // Load the next room, if it does not exist send error message
         if (!roomManager.exists(nextZoneId, nextRoomId)) {
-            userManager.send(user.id, `${_.sample(roomNotReadyMessages)}<sl>`);
+            userManager.send(user.id, `${_.sample(roomNotReadyMessages)}`);
             return;
         }
 
@@ -310,7 +310,7 @@ module.exports = {
         // Move the user to the next room
         if (userManager.moveUser(user.id, nextZoneId, nextRoomId)) {
             // Message to display when leaving current room
-            const leavingMessage = `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verbTense} out of the room headed ${direction}.<sl>`;
+            const leavingMessage = `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verbTense} out of the room headed ${direction}.`;
 
             // Get the people in the current room
             const currentRoomPeople = userManager.getRoomUsers(zoneId, roomId).filter((currentRoomUser) => currentRoomUser.id !== user.id) || [];
@@ -319,7 +319,7 @@ module.exports = {
             userManager.send(currentRoomPeople.map((person) => person.id), leavingMessage);
 
             // Message to display upon entering the target room
-            const enteringMessage = `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verbTense} in from ${["up", "down"].includes(direction) ? "" : "the "}${getOppositeDirection(direction)}.<sl>`;
+            const enteringMessage = `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verbTense} in from ${["up", "down"].includes(direction) ? "" : "the "}${getOppositeDirection(direction)}.`;
 
             const nextRoomPeople = userManager.getRoomUsers(nextZoneId, nextRoomId).filter((nextRoomUser) => nextRoomUser.id !== user.id) || [];
 
@@ -327,7 +327,7 @@ module.exports = {
             userManager.send(nextRoomPeople.map((person) => person.id), enteringMessage);
 
             // Send movement message to player
-            userManager.send(user.id, `You ${Object.keys(verbTenseMap).find((key) => verbTenseMap[key] === verbTense)} ${direction}.<sl>`);
+            userManager.send(user.id, `You ${Object.keys(verbTenseMap).find((key) => verbTenseMap[key] === verbTense)} ${direction}.`);
         }
     },
 };

@@ -42,14 +42,14 @@ class UserManager extends Base {
 
         // Check if a user file with the same ID already exists
         if (userFiles.includes(`${user.id}.json`)) {
-            throw new Error("User with this ID already exists.<sl>");
+            throw new Error("User with this ID already exists.");
         }
 
         // Check all user files and make sure no user has same first and last name
         for (let file of userFiles) {
             const existingUser = JSON.parse(fs.readFileSync(path.join(userDirPath, file), 'utf-8'));
             if (existingUser.firstName === user.firstName && existingUser.lastName === user.lastName) {
-                throw new Error("User with this first and last name already exists.<sl>");
+                throw new Error("User with this first and last name already exists.");
             }
         }
 
@@ -99,13 +99,13 @@ class UserManager extends Base {
             const existingUser = JSON.parse(fs.readFileSync(path.join(userDirPath, file), 'utf-8'));
             if (existingUser.firstName === firstName && existingUser.lastName === lastName) {
                 if (!this.checkPassword(password, existingUser.salt, existingUser.password)) {
-                    throw new Error('Incorrect password.<sl>');
+                    throw new Error('Incorrect password.');
                 } else {
                     return this.load(existingUser.id);
                 }
             }
         }
-        throw new Error('User with the provided first and last name does not exist.<sl>');
+        throw new Error('User with the provided first and last name does not exist.');
     }
 
     /**
@@ -156,7 +156,7 @@ class UserManager extends Base {
 
         if (!room) {
             // Handle error (room not found)
-            this.send([user.id], "<sl>Error: Room not found.<dl>");
+            this.send([user.id], "Error: Room not found.");
             return false;
         }
 
@@ -167,8 +167,7 @@ class UserManager extends Base {
             // Update user's zoneId and roomId
             user.zoneId = zoneId;
             user.roomId = roomId;
-            // Inform the user about the move
-            // this.send([user.id], `<sl>You have been moved to <cyan>${room.name}<reset>.<dl>`);
+
             user.eventEmitter.emit("user_move");
         });
         return true;
@@ -239,7 +238,7 @@ class UserManager extends Base {
      * @param {string} message - The message to send.
      * @param {boolean} format - Should the message be formatted? Default: true
      */
-    send(userIds, message, format = true) {
+    send(userIds, message, format = true, newLine = true) {
         // Convert userId to an array if it's a string
         if (typeof userIds === "string") {
             userIds = [userIds];
@@ -248,10 +247,18 @@ class UserManager extends Base {
         _.forEach(userIds, (id) => {
             const user = this.getUser({id});
             if (user && user.client) {
+                if (newLine) {
+                    user.client.write('\r\n');
+                }
+
                 if (format === true) {
                     user.client.write(this.format(`${message}`, user));
                 } else {
                     user.client.write(`${message}`);
+                }
+
+                if (newLine) {
+                    user.client.write('\r\n');
                 }
             } else {
                 console.log(`User with id ${id.id} not found or offline.`);

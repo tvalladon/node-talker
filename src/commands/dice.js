@@ -22,14 +22,14 @@ module.exports = {
         let {logInfo, logWarn, logError} = params.log;
 
         if (!data) {
-            userManager.send(user.id, "You need to provide dice information!<sl>");
+            userManager.send(user.id, "You need to provide dice information!");
             return;
         }
 
         let diceData = parseDiceString(data);
 
         if (diceData.error) {
-            userManager.send(user.id, `${diceData.error}<sl>`);
+            userManager.send(user.id, `${diceData.error}`);
             return;
         }
 
@@ -46,10 +46,10 @@ module.exports = {
             let highRolls = diceRolls.slice(0, midpoint);
             let lowRolls = diceRolls.slice(midpoint);
 
-            output += `${diceData.with_advantage ? " > Adv" : "   Adv"}: ${calculateDiceRolls(highRolls, diceData.modifier)}<sl>`;
-            output += `${diceData.with_disadvantage ? " > Dis" : "   Dis"}: ${calculateDiceRolls(lowRolls, diceData.modifier)}<sl>`;
+            output += `${diceData.with_advantage ? " > Adv" : "   Adv"}: ${calculateDiceRolls(highRolls, diceData.modifier)}\r\n`;
+            output += `${diceData.with_disadvantage ? " > Dis" : "   Dis"}: ${calculateDiceRolls(lowRolls, diceData.modifier)}`;
         } else {
-            output += `<ht>${calculateDiceRolls(diceRolls, diceData.modifier)}<sl>`;
+            output += `<ht>${calculateDiceRolls(diceRolls, diceData.modifier)}\r\n`;
         }
 
         // Get all users in the same room
@@ -58,7 +58,7 @@ module.exports = {
         switch (command) {
             case "ldice":
                 if (user.role === "visitor") {
-                    userManager.send(user.id, `Visitors can not ldice, please use [c:user create] to create an account.<sl>`);
+                    userManager.send(user.id, `Visitors can not ldice, please use [c:user create] to create an account.`);
                     return;
                 }
                 // Get the current room exits
@@ -79,7 +79,7 @@ module.exports = {
                 break;
             case "gdice":
                 if (user.role === "visitor") {
-                    userManager.send(user.id, `Visitors can not gdice, please use [c:user create] to create an account.<sl>`);
+                    userManager.send(user.id, `Visitors can not gdice, please use [c:user create] to create an account.`);
                     return;
                 }
                 // Override targetUsers with all active users
@@ -88,7 +88,6 @@ module.exports = {
                 logInfo('communication', {type:'gdice', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
             default:
-
                 logInfo('communication', {type:'dice', ipAddress: user.client.remoteAddress, firstName: user.firstName, lastName: user.lastName, zoneId: user.zoneId, roomId: user.roomId, message: data});
                 break;
         }
@@ -96,7 +95,7 @@ module.exports = {
         // Send roll information to all targetUsers
         userManager.send(
             targetUsers.map((person) => person.id),
-            `[p:${user.morphedName || user.firstName + " " + user.lastName}] rolls: ${data}<sl>${output}`
+            `[p:${user.morphedName || user.firstName + " " + user.lastName}] rolls: ${data}\r\n${output}`
         );
     },
 };

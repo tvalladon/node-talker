@@ -194,7 +194,7 @@ module.exports = {
 
         const lookAtRoom = () => {
             if (!currentRoom) {
-                userManager.send(user.id, "You're in an undefined space. Please use [c:rescue]<sl>");
+                userManager.send(user.id, "You're in an undefined space. Please use [c:rescue].");
                 return true;
             }
 
@@ -206,20 +206,20 @@ module.exports = {
 
             const peopleInRoomNames = roomPeople.map((person) => `[p:${person.morphedName || person.firstName + " " + person.lastName}]`) || [];
 
-            userManager.send(user.id, `<yellow>{ <cyan>${roomName}<reset> <yellow>}<reset>${user.role === "administrator" ? ' [' + currentRoom.zoneId + ':' + currentRoom.roomId + ']' : ''}<sl>`);
-            userManager.send(user.id, `${roomDescription}<sl>`);
+            userManager.send(user.id, `<yellow>{ <cyan>${roomName}<reset> <yellow>}<reset>${user.role === "administrator" ? ' [' + currentRoom.zoneId + ':' + currentRoom.roomId + ']' : ''}`);
+            userManager.send(user.id, `${roomDescription}`);
             userManager.send(
                 user.id,
                 `Exits: ${Object.keys(roomExits)
                     .map((exit) => `[e:${exit}]`)
-                    .join(" ")}<sl>`
+                    .join(" ")}`
             );
 
-            userManager.send(user.id, `People: <red>${peopleInRoomNames.length > 0 ? peopleInRoomNames.join(", ") : "none"}<reset><sl>`);
+            userManager.send(user.id, `People: <red>${peopleInRoomNames.length > 0 ? peopleInRoomNames.join(", ") : "none"}<reset>`);
             if (params.context !== "emit") {
                 userManager.send(
                     roomPeople.map((person) => person.id),
-                    `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["room"][command]} room.<sl>`
+                    `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["room"][command]} room.`
                 );
             }
             return true;
@@ -228,22 +228,22 @@ module.exports = {
 
         // display the user's own details
         const lookAtSelf = () => {
-            userManager.send(user.id, `You look at yourself and see:<sl>`);
+            userManager.send(user.id, `You look at yourself and see:`);
             if (user.morphedName) {
-                userManager.send(user.id, `<ht>Name: <green>${user.morphedName}<reset><sl>`);
-                userManager.send(user.id, `<ht>Description: <green>${user.morphedDescription}<reset><sl>`);
+                userManager.send(user.id, `<ht>Name: <green>${user.morphedName}<reset>`);
+                userManager.send(user.id, `<ht>Description: <green>${user.morphedDescription}<reset>`);
             } else {
-                userManager.send(user.id, `<ht>Title: <green>${user.title}<reset><sl>`);
-                userManager.send(user.id, `<ht>First Name: <green>${user.firstName}<reset><sl>`);
-                userManager.send(user.id, `<ht>Last Name: <green>${user.lastName}<reset><sl>`);
-                userManager.send(user.id, `<ht>Clothing: <green>${user.clothing}<reset><sl>`);
-                userManager.send(user.id, `<ht>Holding: <green>${user.holding}<reset><sl>`);
-                userManager.send(user.id, `<ht>Wielding: <green>${user.wielding}<reset><sl>`);
-                userManager.send(user.id, `<ht>Description: <green>${user.description}<reset><sl>`);
+                userManager.send(user.id, `<ht>Title: <green>${user.title}<reset>`);
+                userManager.send(user.id, `<ht>First Name: <green>${user.firstName}<reset>`);
+                userManager.send(user.id, `<ht>Last Name: <green>${user.lastName}<reset>`);
+                userManager.send(user.id, `<ht>Clothing: <green>${user.clothing}<reset>`);
+                userManager.send(user.id, `<ht>Holding: <green>${user.holding}<reset>`);
+                userManager.send(user.id, `<ht>Wielding: <green>${user.wielding}<reset>`);
+                userManager.send(user.id, `<ht>Description: <green>${user.description}<reset>`);
             }
             userManager.send(
                 roomPeople.map((person) => person.id),
-                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["self"][command]} themselves.<sl>`
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["self"][command]} themselves.`
             );
             return true;
         };
@@ -252,7 +252,7 @@ module.exports = {
         const lookInDirection = (direction) => {
             let roomExits = currentRoom.exits;
             if (!roomExits || !roomExits[direction]) {
-                userManager.send(user.id, `There is no exit ${direction}.<sl>`);
+                userManager.send(user.id, `There is no exit ${direction}.`);
                 return;
             }
 
@@ -261,7 +261,7 @@ module.exports = {
             let nextRoom = roomManager.loadRoom(nextZoneId, nextRoomId);
 
             if (!nextRoom) {
-                userManager.send(user.id, `Something clouds your vision ${direction}.<sl>`);
+                userManager.send(user.id, `Something clouds your vision ${direction}.`);
                 return;
             }
 
@@ -272,10 +272,10 @@ module.exports = {
             let exitMessage = Object.keys(nextRoomExits).length ? ` with ${Object.keys(nextRoomExits).length} exits` : "";
             let peopleMessage = nextRoomPeople.length ? ` ${nextRoomPeople.length} people` : "";
 
-            userManager.send(user.id, `${_.capitalize(direction)} you see <cyan>${nextRoomName}<reset>${exitMessage}${peopleMessage}.<sl>`);
+            userManager.send(user.id, `${_.capitalize(direction)} you see <cyan>${nextRoomName}<reset>${exitMessage}${peopleMessage}.`);
             userManager.send(
                 roomPeople.map((person) => person.id),
-                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["direction"][command]} ${_.capitalize(direction)}.<sl>`
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["direction"][command]} ${_.capitalize(direction)}.`
             );
         };
 
@@ -284,13 +284,13 @@ module.exports = {
             const propDescription = currentRoom.props[propName];
 
             if (!propDescription) {
-                userManager.send(user.id, `There is no ${propName} here.<sl>`);
+                userManager.send(user.id, `There is no ${propName} here.`);
             }
 
-            userManager.send(user.id, `${propDescription}<sl>`);
+            userManager.send(user.id, `${propDescription}`);
             userManager.send(
                 roomPeople.map((person) => person.id),
-                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["prop"][command]} ${_.capitalize(propName)}.<sl>`
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["prop"][command]} ${_.capitalize(propName)}.`
             );
         };
 
@@ -317,27 +317,27 @@ module.exports = {
                 // When exactly one person is found, output their details
                 let personFound = peopleFound[0];
                 if (personFound.morphedName) {
-                    userManager.send(user.id, `You look at ${personFound.morphedName} and see:<sl>`);
-                    userManager.send(user.id, `<ht>Name: <green>${personFound.morphedName}<reset><sl>`);
-                    userManager.send(user.id, `<ht>Description: <green>${personFound.morphedDescription}<reset><sl>`);
+                    userManager.send(user.id, `You look at ${personFound.morphedName} and see:`);
+                    userManager.send(user.id, `<ht>Name: <green>${personFound.morphedName}<reset>`);
+                    userManager.send(user.id, `<ht>Description: <green>${personFound.morphedDescription}<reset>`);
                 } else {
-                    userManager.send(user.id, `You look at ${personFound.firstName} ${personFound.lastName} and see:<sl>`);
-                    userManager.send(user.id, `<ht>Title: <green>${personFound.title}<reset><sl>`);
-                    userManager.send(user.id, `<ht>First Name: <green>${personFound.firstName}<reset><sl>`);
-                    userManager.send(user.id, `<ht>Last Name: <green>${personFound.lastName}<reset><sl>`);
-                    userManager.send(user.id, `<ht>Clothing: <green>${personFound.clothing}<reset><sl>`);
-                    userManager.send(user.id, `<ht>Holding: <green>${personFound.holding}<reset><sl>`);
-                    userManager.send(user.id, `<ht>Wielding: <green>${personFound.wielding}<reset><sl>`);
-                    userManager.send(user.id, `<ht>Description: <green>${personFound.description}<reset><sl>`);
+                    userManager.send(user.id, `You look at ${personFound.firstName} ${personFound.lastName} and see:`);
+                    userManager.send(user.id, `<ht>Title: <green>${personFound.title}<reset>`);
+                    userManager.send(user.id, `<ht>First Name: <green>${personFound.firstName}<reset>`);
+                    userManager.send(user.id, `<ht>Last Name: <green>${personFound.lastName}<reset>`);
+                    userManager.send(user.id, `<ht>Clothing: <green>${personFound.clothing}<reset>`);
+                    userManager.send(user.id, `<ht>Holding: <green>${personFound.holding}<reset>`);
+                    userManager.send(user.id, `<ht>Wielding: <green>${personFound.wielding}<reset>`);
+                    userManager.send(user.id, `<ht>Description: <green>${personFound.description}<reset>`);
                 }
                 userManager.send(
                     roomPeople.map((person) => person.id),
-                    `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["player"][command]} [p:${personFound.morphedName || personFound.firstName + " " + personFound.lastName}].<sl>`
+                    `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["player"][command]} [p:${personFound.morphedName || personFound.firstName + " " + personFound.lastName}].`
                 );
                 return true;
             } else if (peopleFound.length > 1) {
                 // When more than one person is found, ask "which one?"
-                userManager.send(user.id, `Multiple people match that description. Which one? Use the full name if needed: [c:look first last]<sl>`);
+                userManager.send(user.id, `Multiple people match that description. Which one? Use the full name if needed: [c:look first last]`);
                 return false;
             } else {
                 return false;
@@ -347,11 +347,11 @@ module.exports = {
 
         const lookAtItem = (item) => {
             // Your logic for examining an item
-            userManager.send(user.id, `You see an ${item} here.<sl>`);
+            userManager.send(user.id, `You see an ${item} here.`);
         };
 
         const lookAtNPC = (npc) => {
-            userManager.send(user.id, `You see ${npc} here.<sl>`);
+            userManager.send(user.id, `You see ${npc} here.`);
         };
 
         const parseProps = (description, props) => {
@@ -391,7 +391,7 @@ module.exports = {
         } else if (lookAtPerson(data)) {
             return true;
         }
-        userManager.send(user.id, `Not sure what you are trying to look at, please be more specific.<sl>`);
+        userManager.send(user.id, `Not sure what you are trying to look at, please be more specific.`);
         return true;
     },
 };

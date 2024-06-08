@@ -74,7 +74,7 @@ class ClientHandler extends Base {
             this.user.online = false; // mark the user as offline
             userManager.save(this.user);
             userManager.removeUser(this.user.id); // remove the user from the list
-            userManager.broadcast(`<sl>[p:${this.user.firstName} ${this.user.lastName}] has disconnected.`); // Notify all users about the disconnection
+            userManager.broadcast(`[p:${this.user.firstName} ${this.user.lastName}] has disconnected.`); // Notify all users about the disconnection
         });
 
         this.client.on("data", async (data) => {
@@ -88,7 +88,7 @@ class ClientHandler extends Base {
 
                         // Check if the command exists
                         if (!_.includes(this.commandHandler.getAllCommands(), commandName)) {
-                            userManager.send(this.user.id, `Command or alias "${commandName}" not found.<sl>`);
+                            userManager.send(this.user.id, `Command or alias "${commandName}" not found.`);
                             this.sendPrompt();
                             return false;
                         }
@@ -112,21 +112,17 @@ class ClientHandler extends Base {
                             didCommandSucceed = commandResult;
                         }
 
-                        this.sendPrompt();
                         if (!didCommandSucceed) {
                             console.log('Error: Command handler execution failed');
                         }
-                    } else {
-                        this.sendPrompt();
                     }
-                } else {
-                    this.sendPrompt();
                 }
 
                 // if (cleanData) this.logInfo("Client data", cleanData);
             } catch (error) {
                 this.logInfo(`Failed to handle data: ${error}`); // Error message if handling data fails
             }
+            this.sendPrompt();
         });
     }
 
@@ -135,7 +131,7 @@ class ClientHandler extends Base {
      * It sends a message asking if colors are visible to the client.
      */
     colorCheck() {
-        userManager.send([this.user.id], "<dl>Checking if you support ansi colors.<sl>Can you see this [c:text] in color?<sl>(y/n) > ");
+        userManager.send([this.user.id], "\r\nChecking if you support ansi colors.\r\nCan you see this [c:text] in color?\r\n(y/n) > ", true, false);
     }
 
     /**
@@ -143,7 +139,7 @@ class ClientHandler extends Base {
      * It sends a message asking if two specific characters are visible to the client.
      */
     highAsciiCheck() {
-        userManager.send([this.user.id], "<dl>Checking if you support special characters.<sl>Can you see BOTH of these characters correctly: ♥ and ¤ ?<sl>(y/n) > ");
+        userManager.send([this.user.id], "\r\nChecking if you support special characters.\r\nCan you see BOTH of these characters correctly: ♥ and ¤ ?\r\n(y/n) > ", true, false);
     }
 
     /**
@@ -153,7 +149,7 @@ class ClientHandler extends Base {
     sendUserBanner() {
         let bannerMessage = (this.settings.bannerMessage || process.env.BANNER_MESSAGE || 'SERVER BANNER');
 
-        userManager.send([this.user.id], '<sl>' + bannerMessage + '<sl>');
+        userManager.send([this.user.id], bannerMessage);
     }
 
     /**
@@ -161,7 +157,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to 'Welcome [p:<player_name>] to the server.'.
      */
     sendUserWelcome() {
-        userManager.send([this.user.id], '<sl>' + (this.settings.welcomeMessage || process.env.WELCOME_MESSAGE || 'Welcome [p:<player_name>] to the server.') + '<sl>');
+        userManager.send([this.user.id], (this.settings.welcomeMessage || process.env.WELCOME_MESSAGE || 'Welcome [p:<player_name>] to the server.'));
     }
 
     /**
@@ -169,7 +165,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to 'SERVER MOTD'.
      */
     sendUserMOTD() {
-        userManager.send([this.user.id], '<sl>' + (this.settings.motdMessage || process.env.MOTD || 'SERVER MOTD') + '<sl>');
+        userManager.send([this.user.id], (this.settings.motdMessage || process.env.MOTD || 'SERVER MOTD'));
     }
 
     /**
@@ -177,7 +173,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to '... and BOOM! you exist ...'
      */
     sendSpawnMessage() {
-        userManager.send([this.user.id], '<sl>' + (this.settings.spawnMessage || process.env.SPAWN_MESSAGE || '... and BOOM! you exist ...') + '<sl>');
+        userManager.send([this.user.id], (this.settings.spawnMessage || process.env.SPAWN_MESSAGE || '... and BOOM! you exist ...'));
     }
 
     /**
@@ -186,7 +182,7 @@ class ClientHandler extends Base {
      */
     sendPrompt() {
         if (this.user.status === 'active') {
-            userManager.send([this.user.id], `[b:? for help][p:${this.user.morphedName || this.user.firstName + " " + this.user.lastName}] <red>:><reset> `);
+            userManager.send([this.user.id], `[b:? for help][p:${this.user.morphedName || this.user.firstName + " " + this.user.lastName}] <red>:><reset> `, true, false);
         }
     }
 
@@ -203,7 +199,7 @@ class ClientHandler extends Base {
             this.handleHighAsciiCheck(strData);
         } else if (this.user.status === "welcome_pause") {
             this.user.status = "active";
-            userManager.broadcast(`<sl>[p:${this.user.firstName} ${this.user.lastName}] has connected.<sl>`); // Notify all users about the new connection
+            userManager.broadcast(`[p:${this.user.firstName} ${this.user.lastName}] has connected.`); // Notify all users about the new connection
             userManager.moveUser(this.user.id, process.env.START_ZONE || '000', process.env.START_ROOM || '000');
         } else {
             return false;
@@ -240,7 +236,7 @@ class ClientHandler extends Base {
             this.sendUserWelcome();
             this.sendSpawnMessage();
             this.sendUserMOTD();
-            userManager.send([this.user.id], "<sl>Press [c:enter] to continue.<sl>");
+            userManager.send([this.user.id], "Press [c:enter] to continue.");
             this.user.status = "welcome_pause";
         } else {
             this.highAsciiCheck();

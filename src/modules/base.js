@@ -36,7 +36,7 @@ class Base {
             "<magenta>": "\x1b[35m",
             "<cyan>": "\x1b[36m",
             "<white>": "\x1b[37m",
-            "<rc>": `\x1b[${Math.floor(Math.random() * (36 - 31 + 1) + 31)}m`, // Random color
+            "<rc>": () => `\x1b[${Math.floor(Math.random() * (36 - 31 + 1) + 31)}m`, // Random color
             "<sl>": "\r\n", // Single new line
             "<dl>": "\r\n\r\n", // Double new line
             "<t>": "\t", // Tab

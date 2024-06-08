@@ -47,31 +47,31 @@ module.exports = {
 
         // Error checking for valid message
         if (!data) {
-            userManager.send(user.id, "You need to provide something to act!<sl>");
+            userManager.send(user.id, "You need to provide something to act!");
             return;
         }
 
         // Broadcast the 'action' to all users in the room
         const sendInRoom = (user, data) => {
-            userManager.send(user.id, `You act: ${data}<sl>`);
+            userManager.send(user.id, `You act: ${data}<reset>`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
-                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<sl>`
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<reset>`
             );
         };
 
         // Broadcast the 'action' to all users in the room and adjacent rooms
         const sendLocally = (user, data) => {
-            userManager.send(user.id, `You ${data}<sl>`);
+            userManager.send(user.id, `You ${data}<reset>`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
-                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<sl>`
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<reset>`
             );
 
             // Fetch current room
@@ -90,7 +90,7 @@ module.exports = {
                 // Send message to users in adjacent rooms
                 userManager.send(
                     usersInExit.map((person) => person.id),
-                    `<sl>(from nearby) [p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<sl>`
+                    `(from nearby) [p:${user.morphedName || user.firstName + " " + user.lastName}] ${data}<reset>`
                 );
             });
         };
@@ -98,13 +98,13 @@ module.exports = {
         // Broadcast the message to all users
         const sendGlobally = (user, message) => {
             // The message that the current user will see
-            userManager.send(user.id, `(globally) You ${message}<sl>`);
+            userManager.send(user.id, `(globally) You ${message}`);
             // Get all users in the same room
             let allUsers = userManager.getActiveUsers().filter((activeUser) => activeUser.id !== user.id) || [];
             // The message that other users on the server will see
             userManager.send(
                 allUsers.map((person) => person.id),
-                `<sl>(from somewhere) [p:${user.morphedName || user.firstName + " " + user.lastName}] ${message}<sl>`
+                `(from somewhere) [p:${user.morphedName || user.firstName + " " + user.lastName}] ${message}`
             );
         };
 
@@ -112,7 +112,7 @@ module.exports = {
             case "lact":
             case "lme":
                 if (user.role === "visitor") {
-                    userManager.send(user.id, `Visitors can not lact, please use [c:user create] to create an account.<sl>`);
+                    userManager.send(user.id, `Visitors can not lact, please use [c:user create] to create an account.`);
                     return;
                 }
                 sendLocally(user, data);
@@ -122,7 +122,7 @@ module.exports = {
             case "gact":
             case "gme":
                 if (user.role === "visitor") {
-                    userManager.send(user.id, `Visitors can not gact, please use [c:user create] to create an account.<sl>`);
+                    userManager.send(user.id, `Visitors can not gact, please use [c:user create] to create an account.`);
                     return;
                 }
                 sendGlobally(user, data);

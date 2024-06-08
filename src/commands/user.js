@@ -30,24 +30,24 @@ module.exports = {
         let data = params.data;
 
         if (!data) {
-            userManager.send(user.id, `Usage: ${this.help}<sl>`);
+            userManager.send(user.id, `Usage: ${this.help}`);
             return;
         }
 
         const args = data.split(" ");
 
         if (!["create", "login", "set", "get"].includes(args[0])) {
-            userManager.send(user.id, `Usage: ${this.help}<sl>`);
+            userManager.send(user.id, `Usage: ${this.help}`);
             return;
         } else if (["create", "login"].includes(args[0]) && args.length !== 4) {
-            userManager.send(user.id, `Usage: ${this.help}<sl>`);
+            userManager.send(user.id, `Usage: ${this.help}`);
             return;
         }
 
         switch (args[0]) {
             case "create": {
                 if (!user.temporary) {
-                    userManager.send(user.id, "You are already logged in to an account, please reconnect to use a different account.<sl>");
+                    userManager.send(user.id, "You are already logged in to an account, please reconnect to use a different account.");
                     return;
                 }
 
@@ -61,7 +61,7 @@ module.exports = {
                 try {
                     // Validate firstName and lastName against non-alphabetic characters
                     if (!/^[a-zA-Z-' ]+$/u.test(firstName) || !/^[a-zA-Z-' ]+$/u.test(lastName)) {
-                        userManager.send(user.id, "Names can only contain alphabetic characters, spaces, hyphens, and apostrophes.<sl>");
+                        userManager.send(user.id, "Names can only contain alphabetic characters, spaces, hyphens, and apostrophes.");
                         return;
                     }
 
@@ -93,16 +93,16 @@ module.exports = {
 
                     let persistedUser = userManager.create(tempUser);
                     if (!persistedUser) {
-                        userManager.send(user.id, "Someone please tell admin my user creation is broken.<sl>");
+                        userManager.send(user.id, "Someone please tell admin my user creation is broken.");
                         return;
                     }
 
                     // Instead of reassigning user, update its properties in-place
                     Object.assign(user, persistedUser);
 
-                    userManager.send(user.id, `Account created, you are now [p:${user.firstName} ${user.lastName}].<sl>Please use [c:user get] and [c:user set] to update your profile description and title as needed.<sl>`);
+                    userManager.send(user.id, `Account created, you are now [p:${user.firstName} ${user.lastName}].Please use [c:user get] and [c:user set] to update your profile description and title as needed.`);
 
-                    userManager.broadcast(`[p:${origFirstName} ${origLastName}] is now known as [p:${user.firstName} ${user.lastName}]]<sl>`);
+                    userManager.broadcast(`[p:${origFirstName} ${origLastName}] is now known as [p:${user.firstName} ${user.lastName}]]`);
                 } catch (error) {
                     userManager.send(user.id, error.message);
                     return;
@@ -111,7 +111,7 @@ module.exports = {
             }
             case "login": {
                 if (!user.temporary) {
-                    userManager.send(user.id, "You are already logged in to an account, please reconnect to use a different account.<sl>");
+                    userManager.send(user.id, "You are already logged in to an account, please reconnect to use a different account.");
                     return;
                 }
 
@@ -126,8 +126,8 @@ module.exports = {
                     // If all checks pass, update in-memory user
                     Object.assign(user, persistedUser);
                     user.eventEmitter.emit("user_move");
-                    userManager.send(user.id, `Logged in successfully, you are now [p:${user.firstName} ${user.lastName}].<sl>`);
-                    userManager.broadcast(`[p:${origFirstName} ${origLastName}] is now known as [p:${user.firstName} ${user.lastName}]<sl>`);
+                    userManager.send(user.id, `Logged in successfully, you are now [p:${user.firstName} ${user.lastName}].`);
+                    userManager.broadcast(`[p:${origFirstName} ${origLastName}] is now known as [p:${user.firstName} ${user.lastName}]`);
                 } catch (error) {
                     userManager.send(user.id, error.message);
                     return;
@@ -137,54 +137,54 @@ module.exports = {
 
             case "get": {
                 if (user.temporary) {
-                    userManager.send(user.id, "You are a visitor, none of your settings can be changed. Please consider creating an account with [c:user create].<sl>");
+                    userManager.send(user.id, "You are a visitor, none of your settings can be changed. Please consider creating an account with [c:user create].");
                     return;
                 }
 
                 const fields = ["description", "title", "clothing", "holding", "wielding"];
                 if (!args[1]) {
-                    userManager.send(user.id, `Usage: [c:user get <key>]. keys are: ${fields.join(", ")}<sl>`);
+                    userManager.send(user.id, `Usage: [c:user get <key>]. keys are: ${fields.join(", ")}`);
                     return;
                 }
 
                 if (_.has(user, args[1])) {
                     let value = _.get(user, args[1]);
                     userManager.send(user.id, `${args[1]}: ${value}`, false);
-                    userManager.send(user.id, `<sl>`);
+                    userManager.send(user.id, ``);
                 } else {
-                    userManager.send(user.id, `The key ${args[1]} does not exist.<sl>`);
+                    userManager.send(user.id, `The key ${args[1]} does not exist.`);
                 }
                 break;
             }
             case "set": {
                 if (user.temporary) {
-                    userManager.send(user.id, "You are a visitor, none of your settings can be changed. Please consider creating an account with [c:user create].<sl>");
+                    userManager.send(user.id, "You are a visitor, none of your settings can be changed. Please consider creating an account with [c:user create].");
                     return;
                 }
 
                 const fields = ["description", "title", "clothing", "holding", "wielding"];
                 if (!args[1]) {
-                    userManager.send(user.id, `Usage: [c:user set <key> <value string>]. keys are: ${fields.join(", ")}<sl>`);
+                    userManager.send(user.id, `Usage: [c:user set <key> <value string>]. keys are: ${fields.join(", ")}`);
                     return;
                 }
 
                 if (_.has(user, args[1])) {
                     if (!args.slice(2).join(" ")) {
-                        userManager.send(user.id, `A value is required for every key, no empty spots.<sl>`);
+                        userManager.send(user.id, `A value is required for every key, no empty spots.`);
                         return;
                     }
 
                     _.set(user, args[1], args.slice(2).join(" "));
                     userManager.save(user);
                     userManager.send(user.id, `${args[1]} set to: ${args.slice(2).join(" ")}`, false);
-                    userManager.send(user.id, `<sl>`);
+                    userManager.send(user.id, ``);
                 } else {
-                    userManager.send(user.id, `The key ${args[1]} does not exist.<sl>`);
+                    userManager.send(user.id, `The key ${args[1]} does not exist.`);
                 }
                 break;
             }
             default:
-                userManager.send(user.id, "Unknown action.<sl>");
+                userManager.send(user.id, "Unknown action.");
                 break;
         }
     },

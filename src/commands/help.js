@@ -26,15 +26,15 @@ module.exports = {
 
         // Helper function to construct detailed help message for a specific command
         const getDetailedCommandHelp = (commandObj) => {
-            let helpMessage = `<yellow>${commandObj.name}<reset><sl>${commandObj.description}<sl>${commandObj.help}<sl>`;
+            let helpMessage = `<yellow>${commandObj.name}<reset>\r\n${commandObj.description}\r\n${commandObj.help}\r\n`;
             if (commandObj.aliases.length) {
-                helpMessage += `Aliases: ${commandObj.aliases.join(', ')}<sl>`;
+                helpMessage += `Aliases: ${commandObj.aliases.join(', ')}\r\n`;
             }
             return helpMessage;
         };
 
         // Helper function to collect unique command names and avoid duplicates through aliases
-        const getMainCommandsHelp = () => mainCommands.map(commandObj => `<yellow>${commandObj.name}<reset>: ${commandObj.description}<sl>`).join('');
+        const getMainCommandsHelp = () => mainCommands.map(commandObj => `<yellow>${commandObj.name}<reset>: ${commandObj.description}\r\n`).join('');
 
         if (data) {
             // User typed 'help <command>', display detailed help including aliases

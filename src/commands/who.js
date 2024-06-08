@@ -27,13 +27,13 @@ module.exports = {
         let allActiveUsers = userManager.getActiveUsers();
 
         if (allActiveUsers.length) {
-            let message = 'Online users:<sl>' + allActiveUsers.map(user => {
+            let message = 'Online users:\r\n' + allActiveUsers.map(user => {
                 let morphedSuffix = user.morphedName ? ` (${user.morphedName})` : '';
                 return `[p:${user.firstName} ${user.lastName}${morphedSuffix}]`;
             }).join(', ');
 
             // Send a message to the user containing the list of online users
-            userManager.send(params.user.id, message + '<sl>');
+            userManager.send(params.user.id, message);
         } else {
             userManager.send(params.user.id, 'No users are currently online.');
         }

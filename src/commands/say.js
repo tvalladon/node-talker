@@ -47,32 +47,32 @@ module.exports = {
 
         // Error checking for valid message
         if (!data) {
-            userManager.send(user.id, "You need to provide something to say!<sl>");
+            userManager.send(user.id, "You need to provide something to say!");
             return;
         }
 
         // Broadcast the 'action' to all users in the room
         const sendInRoom = (user, data) => {
-            userManager.send(user.id, `You say: ${data}<sl>`);
+            userManager.send(user.id, `You say: ${data}<reset>`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
 
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
-                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] says, "${data}"<sl>`
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] says, "${data}<reset>"`
             );
         };
 
         // Broadcast the 'action' to all users in the room
         const sendLocally = (user, data) => {
-            userManager.send(user.id, `You yell: ${data}<sl>`);
+            userManager.send(user.id, `You yell: ${data}<reset>`);
             // Get all users in the same room
             let usersInRoom = userManager.getRoomUsers(user.zoneId, user.roomId).filter((roomUser) => roomUser.id !== user.id) || [];
             // The message that other users in the room will see
             userManager.send(
                 usersInRoom.map((person) => person.id),
-                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] yells, "${data}"<sl>`
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] yells, "${data}<reset>"`
             );
 
             // Fetch current room
@@ -91,7 +91,7 @@ module.exports = {
                 // Send message to users in adjacent rooms
                 userManager.send(
                     usersInExit.map((person) => person.id),
-                    `<sl>(from nearby) [p:${user.morphedName || user.firstName + " " + user.lastName}] yells, "${data}"<sl>`
+                    `(from nearby) [p:${user.morphedName || user.firstName + " " + user.lastName}] yells, "${data}<reset>"`
                 );
             });
         };
@@ -99,13 +99,13 @@ module.exports = {
         const sendGlobally = (user, message) => {
             // Broadcast the message to all users
             // The message that the current user will see
-            userManager.send(user.id, `(globally) You shout: ${message}<sl>`);
+            userManager.send(user.id, `(globally) You shout: ${message}`);
             // Get all users in the same room
             let allUsers = userManager.getActiveUsers().filter((activeUser) => activeUser.id !== user.id) || [];
             // The message that other users on the server will see
             userManager.send(
                 allUsers.map((person) => person.id),
-                `<sl>[p:${user.morphedName || user.firstName + " " + user.lastName}] shouts, "${message}"<sl>`
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] shouts, "${message}"`
             );
         };
 
@@ -113,7 +113,7 @@ module.exports = {
             case "yell":
             case '"':
                 if (user.role === "visitor") {
-                    userManager.send(user.id, `Visitors can not yell, please use [c:user create] to create an account.<sl>`);
+                    userManager.send(user.id, `Visitors can not yell, please use [c:user create] to create an account.`);
                     return;
                 }
                 sendLocally(user, data);
@@ -123,7 +123,7 @@ module.exports = {
             case "shout":
             case "!":
                 if (user.role === "visitor") {
-                    userManager.send(user.id, `Visitors can not shout, please use [c:user create] to create an account.<sl>`);
+                    userManager.send(user.id, `Visitors can not shout, please use [c:user create] to create an account.`);
                     return;
                 }
                 sendGlobally(user, data);
