@@ -186,7 +186,7 @@ class ClientHandler extends Base {
      */
     sendPrompt() {
         if (this.user.status === 'active') {
-            userManager.send([this.user.id], `[b:? for help][p:<player_name>] <red>:><reset> `);
+            userManager.send([this.user.id], `[b:? for help][p:${this.user.morphedName || this.user.firstName + " " + this.user.lastName}] <red>:><reset> `);
         }
     }
 
