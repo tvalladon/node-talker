@@ -228,19 +228,23 @@ module.exports = {
 
         // display the user's own details
         const lookAtSelf = () => {
-            userManager.send(user.id, `You look at yourself and see:`);
+            let output = `You look at yourself and see:\r\n`;
+
             if (user.morphedName) {
-                userManager.send(user.id, `<ht>Name: <green>${user.morphedName}<reset>`);
-                userManager.send(user.id, `<ht>Description: <green>${user.morphedDescription}<reset>`);
+                output += `<ht>Name: <green>${user.morphedName}<reset>\r\n`;
+                output += `<ht>Description: <green>${user.morphedDescription}<reset>\r\n`;
             } else {
-                userManager.send(user.id, `<ht>Title: <green>${user.title}<reset>`);
-                userManager.send(user.id, `<ht>First Name: <green>${user.firstName}<reset>`);
-                userManager.send(user.id, `<ht>Last Name: <green>${user.lastName}<reset>`);
-                userManager.send(user.id, `<ht>Clothing: <green>${user.clothing}<reset>`);
-                userManager.send(user.id, `<ht>Holding: <green>${user.holding}<reset>`);
-                userManager.send(user.id, `<ht>Wielding: <green>${user.wielding}<reset>`);
-                userManager.send(user.id, `<ht>Description: <green>${user.description}<reset>`);
+                output += `<ht>Title: <green>${user.title}<reset>\r\n`;
+                output += `<ht>First Name: <green>${user.firstName}<reset>\r\n`;
+                output += `<ht>Last Name: <green>${user.lastName}<reset>\r\n`;
+                output += `<ht>Clothing: <green>${user.clothing}<reset>\r\n`;
+                output += `<ht>Holding: <green>${user.holding}<reset>\r\n`;
+                output += `<ht>Wielding: <green>${user.wielding}<reset>\r\n`;
+                output += `<ht>Description: <green>${user.description}<reset>\r\n`;
             }
+
+            userManager.send(user.id, output);
+
             userManager.send(
                 roomPeople.map((person) => person.id),
                 `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["self"][command]} themselves.`
@@ -313,23 +317,27 @@ module.exports = {
                 );
             });
 
+            let output = '';
+
             if (peopleFound.length === 1) {
                 // When exactly one person is found, output their details
                 let personFound = peopleFound[0];
                 if (personFound.morphedName) {
-                    userManager.send(user.id, `You look at ${personFound.morphedName} and see:`);
-                    userManager.send(user.id, `<ht>Name: <green>${personFound.morphedName}<reset>`);
-                    userManager.send(user.id, `<ht>Description: <green>${personFound.morphedDescription}<reset>`);
+                    output += `You look at ${personFound.morphedName} and see:\r\n`;
+                    output += `<ht>Name: <green>${personFound.morphedName}<reset>\r\n`;
+                    output += `<ht>Description: <green>${personFound.morphedDescription}<reset>\r\n`;
                 } else {
-                    userManager.send(user.id, `You look at ${personFound.firstName} ${personFound.lastName} and see:`);
-                    userManager.send(user.id, `<ht>Title: <green>${personFound.title}<reset>`);
-                    userManager.send(user.id, `<ht>First Name: <green>${personFound.firstName}<reset>`);
-                    userManager.send(user.id, `<ht>Last Name: <green>${personFound.lastName}<reset>`);
-                    userManager.send(user.id, `<ht>Clothing: <green>${personFound.clothing}<reset>`);
-                    userManager.send(user.id, `<ht>Holding: <green>${personFound.holding}<reset>`);
-                    userManager.send(user.id, `<ht>Wielding: <green>${personFound.wielding}<reset>`);
-                    userManager.send(user.id, `<ht>Description: <green>${personFound.description}<reset>`);
+                    output += `You look at ${personFound.firstName} ${personFound.lastName} and see:\r\n`;
+                    output += `<ht>Title: <green>${personFound.title}<reset>\r\n`;
+                    output += `<ht>First Name: <green>${personFound.firstName}<reset>\r\n`;
+                    output += `<ht>Last Name: <green>${personFound.lastName}<reset>\r\n`;
+                    output += `<ht>Clothing: <green>${personFound.clothing}<reset>\r\n`;
+                    output += `<ht>Holding: <green>${personFound.holding}<reset>\r\n`;
+                    output += `<ht>Wielding: <green>${personFound.wielding}<reset>\r\n`;
+                    output += `<ht>Description: <green>${personFound.description}<reset>\r\n`;
                 }
+                userManager.send(user.id, output);
+
                 userManager.send(
                     roomPeople.map((person) => person.id),
                     `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${actionLookup["player"][command]} [p:${personFound.morphedName || personFound.firstName + " " + personFound.lastName}].`
