@@ -49,8 +49,10 @@ module.exports = {
         let user = params.user;
         let userManager = params.userManager;
         let roomManager = params.roomManager;
-        const patterns = [/^at /, /^in /, /^inside /, /^around /, /^over /, /^under /, /^through /, /^the /];
         let data = params.data;
+        let {logInfo, logWarn, logError} = params.log;
+
+        const patterns = [/^at /, /^in /, /^inside /, /^around /, /^over /, /^under /, /^through /, /^the /];
 
         if (command === "l") command = "look";
 

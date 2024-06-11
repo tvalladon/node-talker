@@ -11,6 +11,7 @@ const LogHandler = require("./modules/logHandler");
 const RoomManager = require("./modules/roomManager");
 const CommandHandler = require("./modules/commandHandler"); // Import CommandHandler
 const ClientHandler = require("./modules/clientHandler");
+const ItemManager = require("./modules/itemManager"); // Import ItemManager
 
 // Construct the command system
 commandHandler = new CommandHandler(); // Initialize CommandHandler
@@ -21,10 +22,12 @@ const log = new LogHandler({path: "../logs/"});
 // Initialize RoomManager
 const roomManager = new RoomManager({roomPath: `${process.cwd()}/${process.env.DB_PATH}/rooms/`});
 
+// Initialize ItemManager
+const itemManager = new ItemManager({itemPath: `${process.cwd()}/${process.env.DB_PATH}/items/`});
 
 let server = net.createServer((client) => {
     try {
-        new ClientHandler({client, roomManager, commandHandler});
+        new ClientHandler({client, roomManager, commandHandler, itemManager});
     } catch (error) {
         log.error({message: `Error creating client handler`, error});
     }
@@ -44,7 +47,7 @@ server.listen(port, (error) => {
 });
 
 // Timeout to clear empty rooms - now in global scope, so it will run only once, not per connection
-let clientHandler = new ClientHandler({client: null, roomManager, commandHandler});
+let clientHandler = new ClientHandler({client: null, roomManager, commandHandler, itemManager});
 
 // Default to 30 min if not set in process.env
 const intervalMinutes = parseInt(process.env.UNLOAD_EMPTY_ROOMS_INTERVAL_MINUTES) || 30;

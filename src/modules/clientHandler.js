@@ -20,6 +20,7 @@ class ClientHandler extends Base {
         this.client = params.client; // Copy the client object ot this.client
         this.roomManager = params.roomManager;
         this.commandHandler = params.commandHandler;
+        this.itemManager = params.itemManager;
         this.userManager = userManager;
 
         if (!this.client) {
@@ -101,6 +102,7 @@ class ClientHandler extends Base {
                             user: this.user,
                             userManager,
                             roomManager: this.roomManager,
+                            itemManager: this.itemManager,
                             data: cleanData
                         });
 

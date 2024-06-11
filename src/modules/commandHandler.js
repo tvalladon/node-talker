@@ -100,6 +100,7 @@ class CommandHandler extends Base {
                 user: params.user,
                 userManager: params.userManager,
                 roomManager: params.roomManager,
+                itemManager: params.itemManager,
                 data: parameters,
                 context: params.context || "user",
                 commandHandler: this,
