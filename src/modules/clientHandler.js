@@ -50,6 +50,7 @@ class ClientHandler extends Base {
                 user,
                 userManager,
                 roomManager: params.roomManager,
+                itemManager: params.itemManager,
                 data: "look",
                 context: "emit",
             })
