@@ -35,6 +35,7 @@ module.exports = {
         let user = params.user;
         let userManager = params.userManager;
         let roomManager = params.roomManager;
+        let itemManager = params.itemManager;
         let data = params.data;
         let {logInfo, logWarn, logError} = params.log;
 
