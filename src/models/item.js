@@ -12,7 +12,10 @@ class Item {
         this.creator = '';
         this.owner = null;
         this.location = null;
-        this.isContainer = false;
+        this.container = false;
+        this.open = false;
+        this.locked = false;
+        this.lit = false;
     }
 }
 

@@ -169,11 +169,19 @@ module.exports = {
                 const editItemNameMatch = fullArgs[1].match(/"([^"]+)"/);
                 const editItemName = editItemNameMatch ? editItemNameMatch[1] : fullArgs[1];
                 const property = fullArgs[2];
-                const value = fullArgs.slice(3).join(" ").replace(/"/g, '');
+                let value = fullArgs.slice(3).join(" ").replace(/"/g, '');
 
                 if (!editItemName || !property || !value) {
                     userManager.send(user.id, 'Please specify the item name, property, and value to edit.');
                     return;
+                }
+
+                // List of boolean properties
+                const booleanProperties = ["container", "open", "locked", "lit"];
+
+                // Convert value to boolean if the property is a boolean property
+                if (booleanProperties.includes(property)) {
+                    value = (value.toLowerCase() === 'true');
                 }
 
                 // Check if the item name includes a selection index
@@ -182,7 +190,6 @@ module.exports = {
                     const selectedItemName = selectedItemMatch[1];
                     const selectedIndex = selectedItemMatch[2];
 
-                    // Find items by name and owner
                     const itemsToEdit = itemManager.findItems({name: selectedItemName, owner: user.id});
                     if (itemsToEdit.length === 0) {
                         userManager.send(user.id, `Selected item "${editItemName}" not found in your inventory.`);
@@ -195,7 +202,6 @@ module.exports = {
                         });
                         userManager.send(user.id, `Successfully updated ${itemsToEdit.length} items named "${selectedItemName}".`);
                         userManager.send(roomPeople.map((person) => person.id), `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verb} on ${itemsToEdit.length} [i:${selectedItemName}] items.`);
-                        // Log the item update
                         logInfo(`User ${user.id} (${user.morphedName || user.firstName + " " + user.lastName}) updated ${itemsToEdit.length} items named "${selectedItemName}".`);
                     } else {
                         const selectedItem = itemsToEdit[parseInt(selectedIndex, 10) - 1];
@@ -206,29 +212,25 @@ module.exports = {
                         itemManager.updateItem(selectedItem.id, {[property]: value});
                         userManager.send(user.id, `Item "${selectedItem.name}" updated successfully.`);
                         userManager.send(roomPeople.map((person) => person.id), `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verb} on [i:${selectedItem.name}].`);
-                        // Log the item update
                         logInfo(`User ${user.id} (${user.morphedName || user.firstName + " " + user.lastName}) updated item "${selectedItem.name}" (ID: ${selectedItem.id}) with property "${property}" set to "${value}".`);
                     }
                     return;
                 }
 
-                // Find items by name and owner
                 const itemsToEdit = itemManager.findItems({name: editItemName, owner: user.id});
                 if (itemsToEdit.length === 0) {
                     userManager.send(user.id, `Item "${editItemName}" not found in your inventory.`);
                     return;
                 } else if (itemsToEdit.length > 1) {
-                    // If more than one item found, list them and ask user to select
                     const itemList = itemsToEdit.map((item, index) => `"${item.name}:${index + 1}"`).join(", ");
                     userManager.send(user.id, `More than one "${editItemName}" found. Please include selection:\n${itemList}`);
                     return;
                 }
 
-                const itemToEdit = itemsToEdit[0]; // Only one item found
+                const itemToEdit = itemsToEdit[0];
                 itemManager.updateItem(itemToEdit.id, {[property]: value});
                 userManager.send(user.id, `Item "${itemToEdit.name}" updated successfully.`);
                 userManager.send(roomPeople.map((person) => person.id), `[p:${user.morphedName || user.firstName + " " + user.lastName}] ${verb} on [i:${itemToEdit.name}].`);
-                // Log the item update
                 logInfo(`User ${user.id} (${user.morphedName || user.firstName + " " + user.lastName}) updated item "${itemToEdit.name}" (ID: ${itemToEdit.id}) with property "${property}" set to "${value}".`);
                 break;
 

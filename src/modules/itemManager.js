@@ -11,7 +11,7 @@ const Item = require("../models/item");
 const Base = require("./base");
 
 const allowedTypes = [
-    "bauble", "head", "clothing", "armor", "pants", "weapon", "tool", "shield", "footwear", "gloves", "accessory", "jewelry", "consumable", "potion", "scroll", "food", "drink", "furniture", "key", "book", "map", "material", "resource", "component", "spell", "ingredient", "artifact", "relic", "gadget", "toy", "instrument", "decoration", "currency", "gem", "orb", "amulet", "ring", "cloak", "belt", "helmet", "boots", "gauntlets", "lantern", "torch", "rod", "staff", "wand", "bag", "satchel", "backpack", "trap", "lockpick", "ammunition", "bomb", "device", "machine", "equipment", "siege", "banner", "emblem", "token", "charm", "talisman", "totem", "idol", "statue", "trophy", "fossil", "specimen", "collectible", "memorabilia", "souvenir", "keepsake", "heirloom", "ritual", "sacrifice", "offering", "vessel", "utility", "miscellaneous"
+    "bauble", "head", "clothing", "armor", "bag", "pants", "weapon", "tool", "shield", "footwear", "gloves", "accessory", "jewelry", "consumable", "potion", "scroll", "food", "drink", "furniture", "key", "book", "map", "material", "resource", "component", "spell", "ingredient", "artifact", "relic", "gadget", "toy", "instrument", "decoration", "currency", "gem", "orb", "amulet", "ring", "cloak", "belt", "helmet", "boots", "gauntlets", "lantern", "torch", "rod", "staff", "wand", "bag", "satchel", "backpack", "trap", "lockpick", "ammunition", "bomb", "device", "machine", "equipment", "siege", "banner", "emblem", "token", "charm", "talisman", "totem", "idol", "statue", "trophy", "fossil", "specimen", "collectible", "memorabilia", "souvenir", "keepsake", "heirloom", "ritual", "sacrifice", "offering", "vessel", "utility", "miscellaneous"
 ];
 
 class ItemManager extends Base {
@@ -150,12 +150,9 @@ class ItemManager extends Base {
         const item = this.items.get(itemId);
         Object.assign(item, newData);
 
-        // Ensure only one of owner, location, or isContainer is set
-        if (item.owner && (item.location || item.isContainer)) {
-            throw new Error("An item cannot have both an owner and a location or be a container.");
-        }
-        if (item.location && item.isContainer) {
-            throw new Error("An item cannot have both a location and be a container.");
+        // Ensure only one of owner, location, or container is set
+        if (item.owner && item.location) {
+            throw new Error("An item cannot have both an owner and a location.");
         }
 
         this.saveItem(item);
