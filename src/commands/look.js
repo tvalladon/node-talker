@@ -49,6 +49,7 @@ module.exports = {
         let user = params.user;
         let userManager = params.userManager;
         let roomManager = params.roomManager;
+        let itemManager = params.itemManager;
         let data = params.data;
         let {logInfo, logWarn, logError} = params.log;
 
@@ -208,16 +209,23 @@ module.exports = {
 
             const peopleInRoomNames = roomPeople.map((person) => `[p:${person.morphedName || person.firstName + " " + person.lastName}]`) || [];
 
-            userManager.send(user.id, `<yellow>{ <cyan>${roomName}<reset> <yellow>}<reset>${user.role === "administrator" ? ' [' + currentRoom.zoneId + ':' + currentRoom.roomId + ']' : ''}`);
-            userManager.send(user.id, `${roomDescription}`);
-            userManager.send(
-                user.id,
-                `Exits: ${Object.keys(roomExits)
-                    .map((exit) => `[e:${exit}]`)
-                    .join(" ")}`
-            );
+            let fullRoomDescription = `<yellow>{ <cyan>${roomName}<reset> <yellow>}<reset>${user.role === "administrator" ? ' [' + currentRoom.zoneId + ':' + currentRoom.roomId + ']' : ''}`;
+            fullRoomDescription += `\n${roomDescription}`;
+            fullRoomDescription += `\nExits: ${Object.keys(roomExits).map((exit) => `[e:${exit}]`).join(" ")}`;
+            fullRoomDescription += `\nPeople: <red>${peopleInRoomNames.length > 0 ? peopleInRoomNames.join(", ") : "none"}<reset>`;
 
-            userManager.send(user.id, `People: <red>${peopleInRoomNames.length > 0 ? peopleInRoomNames.join(", ") : "none"}<reset>`);
+            // Add items in the room to the description
+            const roomItems = itemManager.findItems({location: `${user.zoneId}:${user.roomId}`});
+            if (roomItems.length > 0) {
+                fullRoomDescription += "\nItems: <green>";
+                roomItems.forEach(item => {
+                    fullRoomDescription += `[i:${item.name}] `;
+                });
+                fullRoomDescription += "<reset>";
+            }
+
+            userManager.send(user.id, fullRoomDescription);
+
             if (params.context !== "emit") {
                 userManager.send(
                     roomPeople.map((person) => person.id),
@@ -226,7 +234,6 @@ module.exports = {
             }
             return true;
         };
-
 
         // display the user's own details
         const lookAtSelf = () => {
@@ -354,10 +361,75 @@ module.exports = {
             }
         };
 
+        const lookAtItem = (itemName) => {
+            const zoneId = user.zoneId;
+            const roomId = user.roomId;
+            let targetItem = null;
 
-        const lookAtItem = (item) => {
-            // Your logic for examining an item
-            userManager.send(user.id, `You see an ${item} here.`);
+            // Parse item name and index if provided
+            const itemParts = itemName.split(':');
+            const baseItemName = itemParts[0].toLowerCase();
+            const itemIndex = isNaN(itemParts[1]) ? null : parseInt(itemParts[1], 10) - 1;
+
+            // Fetch items from the user's inventory and the room
+            const userItems = itemManager.findItems({owner: user.id});
+            const roomItems = itemManager.findItems({location: `${zoneId}:${roomId}`});
+
+            // Combine items from both sources
+            const allItems = userItems.concat(roomItems);
+
+            // Filter items by partial name match (case-insensitive)
+            const filteredItems = allItems.filter(item =>
+                item.name.toLowerCase().includes(baseItemName) ||
+                baseItemName.split(' ').every(part => item.name.toLowerCase().includes(part))
+            );
+
+            if (filteredItems.length === 0) {
+                userManager.send(user.id, `You do not see any "${baseItemName}" here or in your inventory.`);
+                return false;
+            } else if (filteredItems.length > 1 && itemIndex === null) {
+                const itemList = filteredItems.map((item, index) => `"${item.name}:${index + 1}"`).join(", ");
+                userManager.send(user.id, `More than one "${baseItemName}" found. Please specify: ${itemList}`);
+                return false;
+            }
+
+            // Select the target item
+            targetItem = itemIndex !== null ? filteredItems[itemIndex] : filteredItems[0];
+
+            if (!targetItem) {
+                userManager.send(user.id, `You do not see any "${itemName}" here or in your inventory.`);
+                return false;
+            }
+
+            // Display item details
+            let itemDescription = `You see [i:${targetItem.name}].\n${targetItem.description}`;
+
+            // If the item is a container, show whether it is open or closed, and list contents if open
+            if (targetItem.container) {
+                if (targetItem.open) {
+                    const containerItems = itemManager.findItems({location: targetItem.id});
+                    if (containerItems.length > 0) {
+                        itemDescription += "\nIt contains: ";
+                        containerItems
+                            .sort((a, b) => a.name.localeCompare(b.name))  // Alphabetize the contents
+                            .forEach(item => {
+                                itemDescription += `[i:${item.name}] `;
+                            });
+                    } else {
+                        itemDescription += "\nIt is empty.";
+                    }
+                } else {
+                    itemDescription += "\nThe container is closed.";
+                }
+            }
+
+            userManager.send(user.id, itemDescription);
+            userManager.send(
+                roomPeople.map((person) => person.id),
+                `[p:${user.morphedName || user.firstName + " " + user.lastName}] examines [i:${targetItem.name}].`
+            );
+
+            return true;
         };
 
         const lookAtNPC = (npc) => {
@@ -392,16 +464,33 @@ module.exports = {
         } else if (currentRoom.props.hasOwnProperty(data)) {
             lookAtProp(data);
             return true;
-        } else if (roomItems.includes(data)) {
-            lookAtItem(data);
-            return true;
-        } else if (roomNPCs.includes(data)) {
-            lookAtNPC(data);
-            return true;
-        } else if (lookAtPerson(data)) {
-            return true;
+        } else {
+            // Normalize the data for case-insensitive comparison
+            const baseData = data.split(':')[0].toLowerCase();
+
+            // Fetch items from the user's inventory and the room
+            const userItems = itemManager.findItems({owner: user.id});
+            const roomItems = itemManager.findItems({location: `${zoneId}:${roomId}`});
+
+            // Combine items from both sources
+            const allItems = userItems.concat(roomItems);
+
+            // Filter items by partial name match (case-insensitive)
+            const matchingItems = allItems.filter(item =>
+                item.name.toLowerCase().includes(baseData) ||
+                baseData.split(' ').every(part => item.name.toLowerCase().includes(part))
+            );
+
+            if (matchingItems.length > 0) {
+                return lookAtItem(data);
+            } else if (roomPeople.some(person => person.morphedName?.toLowerCase().includes(baseData) || person.firstName.toLowerCase().includes(baseData) || person.lastName.toLowerCase().includes(baseData))) {
+                return lookAtPerson(data);
+            } else if (roomNPCs.some(npc => npc.toLowerCase().includes(baseData))) {
+                return lookAtNPC(data);
+            } else {
+                userManager.send(user.id, `Not sure what you are trying to look at, please be more specific.`);
+            }
         }
-        userManager.send(user.id, `Not sure what you are trying to look at, please be more specific.`);
         return true;
-    },
+    }
 };
