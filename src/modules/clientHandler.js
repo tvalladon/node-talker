@@ -91,7 +91,8 @@ class ClientHandler extends Base {
                         // Check if the command exists
                         if (!_.includes(this.commandHandler.getAllCommands(), commandName)) {
                             userManager.send(this.user.id, `Command or alias "${commandName}" not found.`);
-                            this.sendPrompt();
+
+                            userManager.sendPrompt(this.user);
                             return false;
                         }
 
@@ -118,14 +119,13 @@ class ClientHandler extends Base {
                         if (!didCommandSucceed) {
                             console.log('Error: Command handler execution failed');
                         }
+                    } else {
+                        userManager.sendPrompt(this.user);
                     }
                 }
-
-                // if (cleanData) this.logInfo("Client data", cleanData);
             } catch (error) {
                 this.logInfo(`Failed to handle data: ${error}`); // Error message if handling data fails
             }
-            this.sendPrompt();
         });
     }
 
@@ -152,7 +152,7 @@ class ClientHandler extends Base {
     sendUserBanner() {
         let bannerMessage = (this.settings.bannerMessage || process.env.BANNER_MESSAGE || 'SERVER BANNER');
 
-        userManager.send([this.user.id], bannerMessage);
+        userManager.send([this.user.id], `${bannerMessage}\r\n`, true, false);
     }
 
     /**
@@ -160,7 +160,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to 'Welcome [p:<player_name>] to the server.'.
      */
     sendUserWelcome() {
-        userManager.send([this.user.id], (this.settings.welcomeMessage || process.env.WELCOME_MESSAGE || 'Welcome [p:<player_name>] to the server.'));
+        userManager.send([this.user.id], `${this.settings.welcomeMessage || process.env.WELCOME_MESSAGE || 'Welcome [p:<player_name>] to the server.'}\r\n`);
     }
 
     /**
@@ -168,7 +168,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to 'SERVER MOTD'.
      */
     sendUserMOTD() {
-        userManager.send([this.user.id], (this.settings.motdMessage || process.env.MOTD || 'SERVER MOTD'));
+        userManager.send([this.user.id], `${this.settings.motdMessage || process.env.MOTD || 'SERVER MOTD'}\r\n`);
     }
 
     /**
@@ -176,17 +176,7 @@ class ClientHandler extends Base {
      * The message is either retrieved from settings, environment variables or set to '... and BOOM! you exist ...'
      */
     sendSpawnMessage() {
-        userManager.send([this.user.id], (this.settings.spawnMessage || process.env.SPAWN_MESSAGE || '... and BOOM! you exist ...'));
-    }
-
-    /**
-     * Sends a prompt to user.
-     * It sends a predetermined prompt to the user.
-     */
-    sendPrompt() {
-        if (this.user.status === 'active') {
-            userManager.send([this.user.id], `[b:? for help][p:${this.user.morphedName || this.user.firstName + " " + this.user.lastName}] <red>:><reset> `, true, false);
-        }
+        userManager.send([this.user.id], `${this.settings.spawnMessage || process.env.SPAWN_MESSAGE || '... and BOOM! you exist ...'}\r\n`);
     }
 
     /**

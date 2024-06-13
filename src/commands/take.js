@@ -40,12 +40,18 @@ module.exports = {
     description: "Take, collect, extract, fetch, get, grab, remove, retrieve, or withdraw items.",
     aliases: ["collect", "extract", "fetch", "get", "grab", "remove", "retrieve", "withdraw"],
     help: 'Use [c:take <item>] to take an item. Use [c:take <quantity> <item>] to take multiple items. Use [c:take <item> from <container>] to take an item from a container.',
-    execute: async (params) => {
+    execute: async function (params) {
         const {command, user, userManager, roomManager, itemManager, data} = params;
 
+        // Role check to ensure only players with a role other than "visitor" can run this command
+        if (user.role === 'visitor') {
+            userManager.send(user.id, 'Visitors cannot use item tools, please use [c:user create] to create an account.');
+            return;
+        }
+
         if (!data) {
-            userManager.send(user.id, "Please specify an item to take.");
-            return false;
+            userManager.send(user.id, `Usage: ${this.help}`);
+            return;
         }
 
         // Parse the command input

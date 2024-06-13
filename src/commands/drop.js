@@ -38,12 +38,18 @@ module.exports = {
     description: "Drop, deposit, place, put, stash, or store items.",
     aliases: ["deposit", "insert", "place", "put", "stash", "store", "withdraw"],
     help: 'Use [c:drop <item>] to drop an item. Use [c:drop <quantity> <item>] to drop multiple items. Use [c:drop <item> in <container>] to drop an item into a container.',
-    execute: async (params) => {
+    execute: async function (params) {
         const {command, user, userManager, roomManager, itemManager, data} = params;
 
+        // Role check to ensure only players with a role other than "visitor" can run this command
+        if (user.role === 'visitor') {
+            userManager.send(user.id, 'Visitors cannot use item tools, please use [c:user create] to create an account.');
+            return;
+        }
+
         if (!data) {
-            userManager.send(user.id, "Please specify an item to drop.");
-            return false;
+            userManager.send(user.id, `Usage: ${this.help}`);
+            return;
         }
 
         // Parse the command input

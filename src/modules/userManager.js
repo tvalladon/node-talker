@@ -238,7 +238,7 @@ class UserManager extends Base {
      * @param {string} message - The message to send.
      * @param {boolean} format - Should the message be formatted? Default: true
      */
-    send(userIds, message, format = true, newLine = true) {
+    send(userIds, message, format = true, newLine = false, sendPrompt = true) {
         // Convert userId to an array if it's a string
         if (typeof userIds === "string") {
             userIds = [userIds];
@@ -247,9 +247,8 @@ class UserManager extends Base {
         _.forEach(userIds, (id) => {
             const user = this.getUser({id});
             if (user && user.client) {
-                if (newLine) {
-                    user.client.write('\r\n');
-                }
+
+                user.client.write('\n');
 
                 if (format === true) {
                     user.client.write(this.format(`${message}`, user));
@@ -258,12 +257,26 @@ class UserManager extends Base {
                 }
 
                 if (newLine) {
-                    user.client.write('\r\n');
+                    user.client.write('\n');
+                }
+
+                if(sendPrompt) {
+                    this.sendPrompt(user);
                 }
             } else {
                 console.log(`User with id ${id.id} not found or offline.`);
             }
         });
+    }
+
+    /**
+     * Sends a prompt to user.
+     * It sends a predetermined prompt to the user.
+     */
+    sendPrompt(user) {
+        if (user.status === 'active') {
+            this.send([user.id], `[b:? for help][p:${user.morphedName || user.firstName + " " + user.lastName}] <red>:><reset> `, true, false, false);
+        }
     }
 
     /**

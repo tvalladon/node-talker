@@ -44,12 +44,18 @@ module.exports = {
     description: "Light, ignite, kindle, fire, spark, start, or burn items. Extinguish, douse, quench, or snuff items.",
     aliases: ["ignite", "kindle", "fire", "spark", "start", "burn", "douse", "quench", "snuff", "extinguish"],
     help: 'Use [c:light <item>] to light an item. Use [c:extinguish <item>] to extinguish an item.',
-    execute: async (params) => {
-        const {command, user, userManager, itemManager, data} = params;
+    execute: async function (params) {
+        const {command, user, userManager, roomManager, itemManager, data} = params;
+
+        // Role check to ensure only players with a role other than "visitor" can run this command
+        if (user.role === 'visitor') {
+            userManager.send(user.id, 'Visitors cannot use item tools, please use [c:user create] to create an account.');
+            return;
+        }
 
         if (!data) {
-            userManager.send(user.id, `Please specify an item to ${command}.`);
-            return false;
+            userManager.send(user.id, `Usage: ${this.help}`);
+            return;
         }
 
         // Parse the command input
