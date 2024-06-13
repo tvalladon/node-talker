@@ -91,10 +91,6 @@ module.exports = {
             baseItemName.split(' ').every(part => item.name.toLowerCase().includes(part))
         );
 
-        // Debugging logs
-        console.log('allItems', allItems);
-        console.log('filteredItems', filteredItems);
-
         if (filteredItems.length === 0) {
             userManager.send(user.id, `You do not see any "${baseItemName}" here or in your inventory.`);
             return false;
