@@ -106,24 +106,32 @@ module.exports = {
 
         let targetLocation = `${user.zoneId}:${user.roomId}`;
         if (containerName) {
+            const containerParts = containerName.split(':');
+            const baseContainerName = containerParts[0];
+            const containerIndex = isNaN(containerParts[1]) ? null : parseInt(containerParts[1], 10) - 1;
+
             const roomContainers = itemManager.findItems({
                 location: targetLocation,
-                name: containerName,
+                name: baseContainerName,
                 container: true
             });
-            const userContainers = itemManager.findItems({owner: user.id, name: containerName, container: true});
+            const userContainers = itemManager.findItems({owner: user.id, name: baseContainerName, container: true});
             const containers = roomContainers.concat(userContainers);
 
             if (containers.length === 0) {
-                userManager.send(user.id, `Container "${containerName}" not found.`);
+                userManager.send(user.id, `Container "${baseContainerName}" not found.`);
                 return false;
-            } else if (containers.length > 1) {
+            } else if (containers.length > 1 && containerIndex === null) {
                 const containerList = containers.map((item, index) => `"${item.name}:${index + 1}"`).join(", ");
-                userManager.send(user.id, `More than one "${containerName}" found. Please specify: ${containerList}`);
+                userManager.send(user.id, `More than one "${baseContainerName}" found. Please specify: ${containerList}`);
                 return false;
             }
 
-            const container = containers[0];
+            const container = containerIndex !== null ? containers[containerIndex] : containers[0];
+            if (!container) {
+                userManager.send(user.id, `Container "${containerName}" not found.`);
+                return false;
+            }
             if (!container.open) {
                 userManager.send(user.id, `The "${container.name}" is not open.`);
                 return false;
@@ -135,7 +143,6 @@ module.exports = {
                 itemManager.saveItem(item);
             });
 
-            userManager.send(user.id, `You place ${itemsToDrop.length} ${itemName}(s) into the ${container.name}.`);
             userManager.send(userManager.getRoomUsers(user.zoneId, user.roomId).map((u) => u.id), `[p:${user.morphedName || user.firstName + " " + user.lastName}] places ${itemsToDrop.length} [i:${itemName}](s) into [i:${container.name}].`);
         } else {
             itemsToDrop.forEach(item => {
@@ -144,7 +151,6 @@ module.exports = {
                 itemManager.saveItem(item);
             });
 
-            userManager.send(user.id, `You drop ${itemsToDrop.length} ${itemName}(s).`);
             userManager.send(userManager.getRoomUsers(user.zoneId, user.roomId).map((u) => u.id), `[p:${user.morphedName || user.firstName + " " + user.lastName}] drops ${itemsToDrop.length} [i:${itemName}](s).`);
         }
 

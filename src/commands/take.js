@@ -41,7 +41,7 @@ module.exports = {
     aliases: ["collect", "extract", "fetch", "get", "grab", "remove", "retrieve", "withdraw"],
     help: 'Use [c:take <item>] to take an item. Use [c:take <quantity> <item>] to take multiple items. Use [c:take <item> from <container>] to take an item from a container.',
     execute: async function (params) {
-        const {command, user, userManager, roomManager, itemManager, data} = params;
+        const { command, user, userManager, roomManager, itemManager, data } = params;
 
         // Role check to ensure only players with a role other than "visitor" can run this command
         if (user.role === 'visitor') {
@@ -79,34 +79,42 @@ module.exports = {
         const baseItemName = itemParts[0];
         const itemIndex = isNaN(itemParts[1]) ? null : parseInt(itemParts[1], 10) - 1;
 
-        let roomItems = itemManager.findItems({location: `${user.zoneId}:${user.roomId}`, name: baseItemName});
+        let roomItems = itemManager.findItems({ location: `${user.zoneId}:${user.roomId}`, name: baseItemName });
         let containerItems = [];
 
         if (containerName) {
+            const containerParts = containerName.split(':');
+            const baseContainerName = containerParts[0];
+            const containerIndex = isNaN(containerParts[1]) ? null : parseInt(containerParts[1], 10) - 1;
+
             const roomContainers = itemManager.findItems({
                 location: `${user.zoneId}:${user.roomId}`,
-                name: containerName,
+                name: baseContainerName,
                 container: true
             });
-            const userContainers = itemManager.findItems({owner: user.id, name: containerName, container: true});
+            const userContainers = itemManager.findItems({ owner: user.id, name: baseContainerName, container: true });
             const containers = roomContainers.concat(userContainers);
 
             if (containers.length === 0) {
-                userManager.send(user.id, `Container "${containerName}" not found.`);
+                userManager.send(user.id, `Container "${baseContainerName}" not found.`);
                 return false;
-            } else if (containers.length > 1) {
+            } else if (containers.length > 1 && containerIndex === null) {
                 const containerList = containers.map((container, index) => `"${container.name}:${index + 1}"`).join(", ");
-                userManager.send(user.id, `More than one "${containerName}" found. Please specify: ${containerList}`);
+                userManager.send(user.id, `More than one "${baseContainerName}" found. Please specify: ${containerList}`);
                 return false;
             }
 
-            const container = containers[0];
+            const container = containerIndex !== null ? containers[containerIndex] : containers[0];
+            if (!container) {
+                userManager.send(user.id, `Container "${baseContainerName}:${containerIndex + 1}" not found.`);
+                return false;
+            }
             if (!container.open) {
                 userManager.send(user.id, `The "${container.name}" is closed.`);
                 return false;
             }
 
-            containerItems = itemManager.findItems({location: container.id, name: baseItemName});
+            containerItems = itemManager.findItems({ location: container.id, name: baseItemName });
         }
 
         const allItems = containerName ? containerItems : roomItems;
@@ -143,7 +151,6 @@ module.exports = {
             itemManager.saveItem(item);
         });
 
-        userManager.send(user.id, `You take ${itemsToTake.length} ${baseItemName}(s).`);
         userManager.send(
             userManager.getRoomUsers(user.zoneId, user.roomId).map((u) => u.id),
             `[p:${user.morphedName || user.firstName + " " + user.lastName}] takes ${itemsToTake.length} [i:${baseItemName}](s).`
