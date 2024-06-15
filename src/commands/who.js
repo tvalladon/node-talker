@@ -27,7 +27,8 @@ module.exports = {
         let allActiveUsers = userManager.getActiveUsers();
 
         if (allActiveUsers.length) {
-            let message = 'Online users:\r\n' + allActiveUsers.map(user => {
+            let message = `${allActiveUsers.length} Online user(s):\r
+` + allActiveUsers.map(user => {
                 let morphedSuffix = user.morphedName ? ` (${user.morphedName})` : '';
                 return `[p:${user.firstName} ${user.lastName}${morphedSuffix}]`;
             }).join(', ');

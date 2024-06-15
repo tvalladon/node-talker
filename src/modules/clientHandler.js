@@ -119,6 +119,7 @@ class ClientHandler extends Base {
                         if (!didCommandSucceed) {
                             console.log('Error: Command handler execution failed');
                         }
+                        userManager.sendPrompt(this.user);
                     } else {
                         userManager.sendPrompt(this.user);
                     }
@@ -194,6 +195,7 @@ class ClientHandler extends Base {
             this.user.status = "active";
             userManager.broadcast(`[p:${this.user.firstName} ${this.user.lastName}] has connected.`); // Notify all users about the new connection
             userManager.moveUser(this.user.id, process.env.START_ZONE || '000', process.env.START_ROOM || '000');
+            userManager.sendPrompt(this.user);
         } else {
             return false;
         }

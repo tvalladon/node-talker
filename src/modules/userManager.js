@@ -238,7 +238,7 @@ class UserManager extends Base {
      * @param {string} message - The message to send.
      * @param {boolean} format - Should the message be formatted? Default: true
      */
-    send(userIds, message, format = true, newLine = false, sendPrompt = true) {
+    send(userIds, message, format = true, newLine = false, sendPrompt = false) {
         // Convert userId to an array if it's a string
         if (typeof userIds === "string") {
             userIds = [userIds];

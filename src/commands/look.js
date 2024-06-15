@@ -261,7 +261,6 @@ module.exports = {
             return true;
         };
 
-
         const lookInDirection = (direction) => {
             let roomExits = currentRoom.exits;
             if (!roomExits || !roomExits[direction]) {
